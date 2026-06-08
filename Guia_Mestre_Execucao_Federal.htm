@@ -1,0 +1,2985 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guia_Mestre_Execucao_Federal</title>
+<style>
+  :root {
+    --bg: #f5f4f0;
+    --surface: #ffffff;
+    --surface2: #f0efe9;
+    --border: #e0dfd8;
+    --border2: #cccbc3;
+    --text: #1a1a18;
+    --text2: #5a5a56;
+    --text3: #9a9a94;
+    --accent: #1a3a6b;
+    --accent-light: #e8edf5;
+    --accent-text: #1a3a6b;
+    --danger: #8b2020;
+    --danger-light: #fdf0f0;
+    --warn: #7a4a10;
+    --warn-light: #fdf5e8;
+    --ok: #1a5c2e;
+    --ok-light: #edf7f0;
+    --radius: 8px;
+    --radius-lg: 12px;
+    --font: 'Segoe UI', system-ui, sans-serif;
+    --mono: 'Consolas', monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font); background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.5; height: 100vh; overflow: hidden; }
+
+  /* Layout */
+  #login-screen { display: flex; align-items: center; justify-content: center; height: 100vh; background: var(--bg); }
+  #app { display: none; height: 100vh; flex-direction: column; }
+  .app-shell { display: flex; flex: 1; overflow: hidden; }
+
+  /* Topbar */
+  .topbar { background: var(--accent); color: white; padding: 0 20px; height: 44px; display: flex; align-items: center; gap: 16px; flex-shrink: 0; }
+  .topbar-brand { font-size: 13px; font-weight: 600; letter-spacing: .03em; opacity: .95; }
+  .topbar-sep { width: 1px; height: 18px; background: rgba(255,255,255,.25); }
+  .topbar-sub { font-size: 12px; opacity: .7; flex: 1; }
+  .topbar-user { font-size: 12px; opacity: .8; display: flex; align-items: center; gap: 6px; }
+  .topbar-btn { background: rgba(255,255,255,.15); border: 1px solid rgba(255,255,255,.25); color: white; padding: 4px 10px; border-radius: 6px; font-size: 12px; cursor: pointer; }
+  .topbar-btn:hover { background: rgba(255,255,255,.25); }
+
+  /* Sidebar */
+  .sidebar { width: 210px; background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; flex-shrink: 0; overflow-y: auto; }
+  .nav-section { padding: 12px 8px 4px; }
+  .nav-label { font-size: 10px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: .07em; padding: 0 8px 6px; }
+  .nav-item { display: flex; align-items: center; gap: 9px; padding: 7px 10px; border-radius: var(--radius); cursor: pointer; font-size: 13px; color: var(--text2); margin-bottom: 1px; }
+  .nav-item:hover { background: var(--surface2); color: var(--text); }
+  .nav-item.active { background: var(--accent-light); color: var(--accent); font-weight: 500; }
+  .nav-item svg { width: 15px; height: 15px; flex-shrink: 0; }
+  .nav-badge { margin-left: auto; font-size: 10px; background: var(--accent-light); color: var(--accent); padding: 1px 6px; border-radius: 8px; font-weight: 500; }
+  .nav-divider { height: 1px; background: var(--border); margin: 8px 12px; }
+
+  /* Main content */
+  .main { flex: 1; overflow-y: auto; background: var(--bg); }
+  .panel { display: none; padding: 20px; }
+  .panel.active { display: block; }
+
+  /* Cards */
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 16px; margin-bottom: 14px; }
+  .card-title { font-size: 11px; font-weight: 600; color: var(--text2); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+
+  /* Stats */
+  .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 16px; }
+  .stat { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 12px; }
+  .stat-n { font-size: 24px; font-weight: 600; }
+  .stat-l { font-size: 11px; color: var(--text3); margin-top: 2px; }
+
+  /* Buttons */
+  .btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: var(--radius); border: 1px solid var(--border2); background: var(--surface); font-size: 13px; cursor: pointer; color: var(--text); font-family: var(--font); transition: background .12s; }
+  .btn:hover { background: var(--surface2); }
+  .btn-primary { background: var(--accent); color: white; border-color: var(--accent); }
+  .btn-primary:hover { background: #152d54; }
+  .btn-sm { padding: 5px 10px; font-size: 12px; }
+  .btn-danger { background: var(--danger-light); color: var(--danger); border-color: #f5c0c0; }
+  .btn-danger:hover { background: #fde0e0; }
+  .btn svg { width: 14px; height: 14px; }
+
+  /* Forms */
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+  .form-group { display: flex; flex-direction: column; gap: 4px; }
+  .form-label { font-size: 11px; font-weight: 500; color: var(--text2); text-transform: uppercase; letter-spacing: .04em; }
+  input, select, textarea { width: 100%; padding: 7px 10px; font-size: 13px; border: 1px solid var(--border2); border-radius: var(--radius); background: var(--surface); color: var(--text); font-family: var(--font); }
+  input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent); }
+  textarea { resize: vertical; min-height: 90px; line-height: 1.5; }
+  input[type="password"] { letter-spacing: .1em; }
+
+  /* Tags */
+  .tag { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 10px; margin: 2px; }
+  .tag-blue { background: var(--accent-light); color: var(--accent); }
+  .tag-red { background: var(--danger-light); color: var(--danger); }
+  .tag-warn { background: var(--warn-light); color: var(--warn); }
+  .tag-ok { background: var(--ok-light); color: var(--ok); }
+  .tag-gray { background: var(--surface2); color: var(--text2); }
+
+  /* Alerts */
+  .alert { padding: 10px 14px; border-radius: var(--radius); font-size: 12px; line-height: 1.6; margin-bottom: 12px; border: 1px solid; }
+  .alert-info { background: var(--accent-light); color: var(--accent-text); border-color: #c0cfe8; }
+  .alert-warn { background: var(--warn-light); color: var(--warn); border-color: #f0d090; }
+  .alert-ok { background: var(--ok-light); color: var(--ok); border-color: #a0d8b0; }
+
+  /* Model cards */
+  .model-list { display: flex; flex-direction: column; gap: 10px; }
+  .model-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 14px; cursor: pointer; transition: border-color .15s; }
+  .model-card:hover { border-color: var(--accent); }
+  .model-header { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
+  .model-id { font-size: 10px; font-family: var(--mono); color: var(--text3); background: var(--surface2); padding: 2px 6px; border-radius: 4px; margin-top: 2px; white-space: nowrap; }
+  .model-title { font-size: 13px; font-weight: 500; flex: 1; }
+  .model-meta { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 8px; }
+  .model-meta-item .lbl { font-size: 10px; color: var(--text3); text-transform: uppercase; }
+  .model-meta-item .val { font-size: 12px; font-weight: 500; }
+  .model-actions { display: flex; gap: 8px; margin-top: 10px; }
+
+  /* Upload zone */
+  .upload-zone { border: 2px dashed var(--border2); border-radius: var(--radius-lg); padding: 28px; text-align: center; cursor: pointer; transition: border-color .15s, background .15s; margin-bottom: 16px; }
+  .upload-zone:hover { border-color: var(--accent); background: var(--accent-light); }
+  .upload-zone input { display: none; }
+  .upload-icon { font-size: 28px; margin-bottom: 8px; }
+  .upload-zone p { font-size: 13px; color: var(--text2); margin-bottom: 4px; }
+  .upload-zone small { font-size: 11px; color: var(--text3); }
+
+  /* File list */
+  .file-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); margin-bottom: 6px; }
+  .file-icon { font-size: 20px; }
+  .file-info { flex: 1; }
+  .file-name { font-size: 13px; font-weight: 500; }
+  .file-meta { font-size: 11px; color: var(--text3); margin-top: 1px; }
+  .file-status { font-size: 11px; font-weight: 500; }
+  .status-ok { color: var(--ok); }
+  .status-proc { color: var(--warn); }
+
+  /* Minuta output */
+  .minuta-box { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; font-size: 13px; line-height: 1.9; white-space: pre-wrap; font-family: var(--font); color: var(--text); display: none; margin-top: 14px; }
+  .loading-bar { display: none; text-align: center; padding: 16px; color: var(--text2); font-size: 13px; }
+  .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid var(--border2); border-top-color: var(--accent); border-radius: 50%; animation: spin .7s linear infinite; vertical-align: middle; margin-right: 8px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Chunk progress */
+  .chunk-list { display: flex; flex-direction: column; gap: 4px; margin: 8px 0; }
+  .chunk-item { display: flex; align-items: center; gap: 8px; font-size: 12px; padding: 5px 10px; background: var(--surface2); border-radius: 6px; }
+  .chunk-status { width: 8px; height: 8px; border-radius: 50%; background: var(--border2); }
+  .chunk-status.done { background: var(--ok); }
+  .chunk-status.active { background: var(--warn); animation: pulse .8s infinite; }
+  @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:.4; } }
+
+  /* Search */
+  .search-wrap { display: flex; gap: 8px; margin-bottom: 14px; }
+  .search-wrap input { flex: 1; }
+
+  /* Tabs */
+  .tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 16px; }
+  .tab { padding: 8px 16px; font-size: 13px; cursor: pointer; color: var(--text2); border-bottom: 2px solid transparent; margin-bottom: -1px; }
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--accent); font-weight: 500; border-bottom-color: var(--accent); }
+
+  /* Settings panel */
+  .settings-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border); }
+  .settings-row:last-child { border-bottom: none; }
+  .settings-label { font-size: 13px; font-weight: 500; }
+  .settings-desc { font-size: 11px; color: var(--text3); margin-top: 2px; }
+  .api-key-display { font-size: 12px; font-family: var(--mono); color: var(--text3); background: var(--surface2); padding: 4px 10px; border-radius: 6px; letter-spacing: .05em; }
+
+  /* Login */
+  .login-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 32px 28px; width: 340px; }
+  .login-logo { font-size: 13px; font-weight: 700; color: var(--accent); letter-spacing: .04em; margin-bottom: 4px; }
+  .login-title { font-size: 20px; font-weight: 600; margin-bottom: 4px; }
+  .login-sub { font-size: 12px; color: var(--text3); margin-bottom: 24px; }
+  .login-error { color: var(--danger); font-size: 12px; margin-top: 8px; display: none; }
+
+
+
+
+  /* Curadoria */
+  .cur-controversia { display:flex; align-items:center; gap:8px; padding:6px 8px; border-radius:6px; background:var(--surface2); border:1px solid var(--border); }
+  .cur-controversia.ativa { border-color:var(--accent); background:var(--accent-light); }
+  .cur-controversia-label { flex:1; font-size:12px; font-weight:500; }
+  .cur-controversia-badge { font-size:10px; padding:2px 6px; border-radius:8px; background:var(--accent); color:white; }
+  .bloco-card { border:1px solid var(--border); border-radius:var(--radius); padding:10px 12px; cursor:pointer; transition:border-color .15s,background .15s; }
+  .bloco-card:hover { border-color:var(--border2); background:var(--surface2); }
+  .bloco-card.selecionado { border-color:var(--accent); background:var(--accent-light); }
+  .bloco-header { display:flex; align-items:flex-start; gap:8px; }
+  .bloco-check { width:auto; accent-color:var(--accent); margin-top:2px; flex-shrink:0; }
+  .bloco-titulo { font-size:12px; font-weight:600; flex:1; }
+  .bloco-tipo { font-size:10px; padding:1px 6px; border-radius:6px; background:var(--warn-light); color:var(--warn); flex-shrink:0; }
+  .bloco-tipo.dispositivo { background:var(--ok-light); color:var(--ok); }
+  .bloco-preview { font-size:11px; color:var(--text2); margin-top:5px; margin-left:22px; line-height:1.5; }
+  .bloco-prec { display:flex; flex-wrap:wrap; gap:4px; margin-top:5px; margin-left:22px; }
+  .bloco-prec span { font-size:10px; background:var(--surface2); border:1px solid var(--border); padding:1px 6px; border-radius:8px; color:var(--text3); }
+
+  /* Fase checkboxes */
+  .fase-check-item { display:flex; align-items:center; gap:7px; font-size:12px; cursor:pointer; padding:2px 0; color:var(--text2); }
+  .fase-check-item input { width:auto; accent-color:var(--accent); cursor:pointer; }
+  .fase-check-item:hover { color:var(--text); }
+
+  /* Filtro tags */
+  .filtro-tag-container { display:flex; flex-wrap:wrap; gap:5px; min-height:24px; }
+  .filtro-tag { display:inline-flex; align-items:center; gap:5px; font-size:11px; padding:3px 8px; border-radius:10px; background:var(--accent-light); color:var(--accent); }
+  .filtro-tag button { background:none; border:none; cursor:pointer; color:var(--accent); font-size:13px; line-height:1; padding:0; opacity:.6; }
+  .filtro-tag button:hover { opacity:1; }
+  .filtro-tag.partes { background:#f0f8f0; color:#1a5c2e; }
+  .filtro-tag.partes button { color:#1a5c2e; }
+  .filtro-tag.assunto { background:var(--warn-light); color:var(--warn); }
+  .filtro-tag.assunto button { color:var(--warn); }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+  /* Section title */
+  .sec-title { font-size: 11px; font-weight: 600; color: var(--text2); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 12px; padding-bottom: 7px; border-bottom: 1px solid var(--border); }
+
+  /* Modal */
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 200; align-items: center; justify-content: center; }
+  .modal-overlay.open { display: flex; }
+  .modal { background: var(--surface); border-radius: var(--radius-lg); border: 1px solid var(--border); width: 580px; max-height: 80vh; overflow-y: auto; padding: 22px; }
+  .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+  .modal-title { font-size: 15px; font-weight: 600; }
+  .modal-close { background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text2); line-height: 1; }
+  .decision-text { font-size: 13px; line-height: 1.8; white-space: pre-wrap; background: var(--surface2); border-radius: var(--radius); padding: 14px; margin-bottom: 14px; }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">⚖ GUIA_MESTRE</div>
+    <div class="login-title">Acesso ao sistema</div>
+    <div class="login-sub">Assistente Jurídico — Cumprimento de Sentença<br>Fazenda Pública Federal</div>
+    <div class="form-group" style="margin-bottom:10px">
+      <label class="form-label">Usuário</label>
+      <input type="text" id="login-user" placeholder="magistrado" autocomplete="username">
+    </div>
+    <div class="form-group" style="margin-bottom:16px">
+      <label class="form-label">Senha</label>
+      <input type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="try{doLogin()}catch(e){alert('Erro: '+e.message)}">Entrar</button>
+    <div class="login-error" id="login-error">Usuário ou senha incorretos.</div>
+    <div style="margin-top:16px;padding-top:12px;border-top:1px solid var(--border);font-size:11px;color:var(--text3)">
+      Credenciais padrão: <code style="background:var(--surface2);padding:1px 4px;border-radius:3px">magistrado</code> / <code style="background:var(--surface2);padding:1px 4px;border-radius:3px">guia2024</code>
+      <br>Para alterar, acesse <b>Configurações → Credenciais de acesso</b> após o login.
+    </div>
+    <div style="margin-top:10px;text-align:center">
+      <button class="btn btn-sm" style="font-size:11px;color:var(--text3)" onclick="restaurarCredenciaisPadrao()">↺ Restaurar credenciais padrão</button>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <div class="topbar">
+    <span class="topbar-brand">⚖ GUIA_MESTRE_EXECUCAO_FEDERAL</span>
+    <span class="topbar-sep"></span>
+    <span class="topbar-sub">Assistente Jurídico — Cumprimento de Sentença contra a Fazenda Pública Federal</span>
+    <span class="topbar-user">
+      <svg viewBox="0 0 16 16" fill="none" style="width:13px;height:13px;stroke:rgba(255,255,255,.7);stroke-width:1.5"><circle cx="8" cy="5" r="3"></circle><path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6"></path></svg>
+      <span id="topbar-username">magistrado</span>
+    </span>
+    <button class="topbar-btn" onclick="doLogout()">Sair</button>
+  </div>
+
+  <div class="app-shell">
+    <div class="sidebar">
+      <div class="nav-section">
+        <div class="nav-label">Principal</div>
+        <div class="nav-item active" onclick="nav('dashboard',this)">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="1" width="6" height="6" rx="1"></rect><rect x="9" y="1" width="6" height="6" rx="1"></rect><rect x="1" y="9" width="6" height="6" rx="1"></rect><rect x="9" y="9" width="6" height="6" rx="1"></rect></svg>
+          Painel
+        </div>
+        <div class="nav-item" onclick="nav('base',this)">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><ellipse cx="8" cy="4" rx="6" ry="2.5"></ellipse><path d="M2 4v8c0 1.4 2.7 2.5 6 2.5s6-1.1 6-2.5V4"></path><path d="M2 8c0 1.4 2.7 2.5 6 2.5S14 9.4 14 8"></path></svg>
+          Base de Modelos <span class="nav-badge" id="badge-base">5</span>
+        </div>
+        <div class="nav-item" onclick="nav('upload',this)">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 10V3m-3 3 3-3 3 3"></path><path d="M3 11v2h10v-2"></path></svg>
+          Importar Autos
+        </div>
+        <div class="nav-item" onclick="nav('repositorio',this)">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h3.764a1.5 1.5 0 0 1 1.06.44l.94.94H13.5A1.5 1.5 0 0 1 15 5v7a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12V3.5z"></path></svg>
+          Repositório PDF <span class="nav-badge" id="badge-repo" style="display:none;background:#e8f5e0;color:#1a5c2e">Novo</span>
+        </div>
+        <div class="nav-item" onclick="nav('assistente',this)">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="3" width="14" height="10" rx="2"></rect><path d="M5 7h6M5 10h4"></path></svg>
+          Gerar Minuta <span class="nav-badge" style="background:#e8f5e0;color:#1a5c2e">IA</span>
+        </div>
+        <div class="nav-item" onclick="nav('curadoria',this)">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h8M2 12h5"></path><circle cx="13" cy="11" r="2.5"></circle><path d="M15 13.5l1.5 1.5"></path></svg>
+          Curadoria Jurídica <span class="nav-badge" style="background:#f5f0ff;color:#5b21b6">novo</span>
+        </div>
+      </div>
+      <div class="nav-divider"></div>
+      <div class="nav-section">
+        <div class="nav-label">Sistema</div>
+        <div class="nav-item" onclick="nav('config',this)">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="2.5"></circle><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.1 3.1l1.4 1.4M11.5 11.5l1.4 1.4M3.1 12.9l1.4-1.4M11.5 4.5l1.4-1.4"></path></svg>
+          Configurações
+        </div>
+      </div>
+    </div>
+
+    <div class="main">
+      <!-- PAINEL DASHBOARD -->
+      <div class="panel active" id="panel-dashboard">
+        <div class="stats-row">
+          <div class="stat"><div class="stat-n" style="color:var(--accent)" id="stat-modelos">5</div><div class="stat-l">Modelos na base</div></div>
+          <div class="stat"><div class="stat-n" style="color:var(--ok)">4</div><div class="stat-l">Réus catalogados</div></div>
+          <div class="stat"><div class="stat-n" style="color:var(--warn)">4</div><div class="stat-l">Fases cobertas</div></div>
+          <div class="stat"><div class="stat-n" style="color:var(--danger)">12</div><div class="stat-l">Pontos controvertidos</div></div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Como usar o sistema</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div style="padding:12px;background:var(--surface2);border-radius:var(--radius)">
+              <div style="font-size:12px;font-weight:600;color:var(--accent);margin-bottom:6px">1. Alimente a base</div>
+              <div style="font-size:12px;color:var(--text2);line-height:1.6">Vá em <b>Importar Autos</b> e carregue os PDFs das decisões que deseja usar como modelo. O sistema os classifica e os adiciona à base.</div>
+            </div>
+            <div style="padding:12px;background:var(--surface2);border-radius:var(--radius)">
+              <div style="font-size:12px;font-weight:600;color:var(--accent);margin-bottom:6px">2. Gere minutas</div>
+              <div style="font-size:12px;color:var(--text2);line-height:1.6">Vá em <b>Gerar Minuta</b>, selecione a fase e réu, cole o resumo dos autos (ou carregue as peças-chave em PDF) e clique em gerar.</div>
+            </div>
+            <div style="padding:12px;background:var(--surface2);border-radius:var(--radius)">
+              <div style="font-size:12px;font-weight:600;color:var(--accent);margin-bottom:6px">3. Processos grandes (500+ pág.)</div>
+              <div style="font-size:12px;color:var(--text2);line-height:1.6">Carregue
+ apenas as peças relevantes: sentença, cálculos e impugnação. O sistema 
+processa em lotes de 100 páginas automaticamente.</div>
+            </div>
+            <div style="padding:12px;background:var(--surface2);border-radius:var(--radius)">
+              <div style="font-size:12px;font-weight:600;color:var(--accent);margin-bottom:6px">4. Configuração da API</div>
+              <div style="font-size:12px;color:var(--text2);line-height:1.6">Em <b>Configurações</b>, insira sua chave da API Anthropic. Ela fica salva localmente e nunca é compartilhada.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Réus e pontos controvertidos catalogados</div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px">
+            <span class="tag tag-blue">INSS</span>
+            <span class="tag tag-blue">União Federal</span>
+            <span class="tag tag-blue">FUNASA</span>
+            <span class="tag tag-blue">UFMG</span>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:4px">
+            <span class="tag tag-gray">Índice de correção (INPC × IPCA-E)</span>
+            <span class="tag tag-gray">Taxa de juros (TR × SELIC)</span>
+            <span class="tag tag-gray">Marco inicial da correção</span>
+            <span class="tag tag-gray">Competência JEF × JF</span>
+            <span class="tag tag-gray">Natureza do crédito</span>
+            <span class="tag tag-gray">Renúncia para RPV</span>
+            <span class="tag tag-gray">Honorários no CS</span>
+            <span class="tag tag-gray">Prescrição quinquenal</span>
+            <span class="tag tag-gray">Excesso de execução</span>
+            <span class="tag tag-gray">FUSEX / Pensão Militar</span>
+            <span class="tag tag-gray">DIB / DCB corretos</span>
+            <span class="tag tag-gray">Tema 905/STJ</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- BASE DE MODELOS -->
+      <div class="panel" id="panel-base">
+        <div class="search-wrap">
+          <input type="text" id="search-input" placeholder="Buscar por réu, fase, título, ponto controvertido..." oninput="renderModels(this.value)">
+          <button class="btn btn-sm" onclick="renderModels('')">Limpar</button>
+        </div>
+        <div class="tabs">
+          <div class="tab active" onclick="filterTab('todos',this)">Todos</div>
+          <div class="tab" onclick="filterTab('Despacho',this)">Despachos</div>
+          <div class="tab" onclick="filterTab('Decisão interlocutória',this)">Decisões</div>
+          <div class="tab" onclick="filterTab('Sentença',this)">Sentenças</div>
+        </div>
+        <div class="model-list" id="models-list"></div>
+      </div>
+
+      <!-- IMPORTAR AUTOS -->
+      <div class="panel" id="panel-upload">
+        <div class="sec-title">Importar documentos para a base</div>
+        <div class="alert alert-info">
+          <b>Processos com 500–1000 páginas:</b> carregue apenas as 
+peças relevantes (sentença, cálculos, impugnação). O sistema divide 
+automaticamente em lotes de 100 páginas para a API. Não é necessário 
+carregar os autos integrais.
+        </div>
+        <div class="upload-zone" onclick="document.getElementById('file-input').click()">
+          <div class="upload-icon">📁</div>
+          <p>Clique para selecionar PDFs</p>
+          <small>Máx. 32 MB por arquivo · Suporte a múltiplos arquivos · PDFs com camada de texto têm custo menor</small>
+          <input type="file" id="file-input" multiple="" accept=".pdf,.docx,.txt" onchange="handleFiles(this.files)">
+        </div>
+
+        <div class="card">
+          <div class="card-title">Classificação do documento</div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Tipo de documento</label>
+              <select id="doc-tipo">
+                <option selected="selected">Despacho</option>
+                <option>Decisão interlocutória</option>
+                <option>Sentença</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Fase processual</label>
+              <select id="doc-fase">
+                <option selected="selected">Apresentação de cálculos</option>
+                <option>Impugnação ao cumprimento</option>
+                <option>Manifestação sobre impugnação</option>
+                <option>Homologação de cálculos</option>
+                <option>Remeter à contadoria</option>
+                <option>Expedição de Requisitório</option>
+                <option>Converter em cumprimento de sentença</option>
+                <option>Decisão — Medidas restritivas</option>
+                <option>Sentença de extinção pelo pagamento</option>
+                <option>Cumprimento efetivo</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Réu</label>
+              <select id="doc-reu">
+                <option selected="selected">INSS</option>
+                <option>União Federal</option>
+                <option>FUNASA</option>
+                <option>UFMG</option>
+                <option>Outro ente federal</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Modalidade</label>
+              <select id="doc-cs-tipo">
+                <option selected="selected">RPV — Pequeno valor</option>
+                <option>Precatório</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group" style="margin-bottom:12px">
+            <label class="form-label">Pontos controvertidos (separados por vírgula)</label>
+            <input type="text" id="doc-pontos" placeholder="Ex: Excesso de execução, Taxa de juros">
+          </div>
+          <button class="btn btn-primary" onclick="addToBase()">＋ Adicionar à base de modelos</button>
+        </div>
+
+        <div class="sec-title">Arquivos carregados</div>
+        <div id="file-list"></div>
+      </div>
+
+
+      <!-- REPOSITÓRIO PDF -->
+      <div class="panel" id="panel-repositorio">
+        <div class="alert alert-info" id="repo-fsapi-warn" style="display:none">
+          ⚠️ Seu navegador não suporta a File System Access API. Use o Chrome ou Edge para habilitar o acesso à pasta local.
+        </div>
+
+        <!-- Sem pasta conectada -->
+        <div id="repo-disconnected">
+          <div style="text-align:center;padding:40px 20px;background:var(--surface);border:2px dashed var(--border2);border-radius:var(--radius-lg);margin-bottom:16px">
+            <div style="font-size:40px;margin-bottom:12px">📂</div>
+            <div style="font-size:15px;font-weight:600;margin-bottom:6px">Conectar pasta de repositório</div>
+            <div style="font-size:12px;color:var(--text2);max-width:420px;margin:0 auto 20px">Selecione
+ a pasta local onde ficam seus PDFs de modelos. O sistema lerá todos os 
+arquivos existentes e monitorará a inclusão de novos.</div>
+            <button class="btn btn-primary" onclick="conectarPasta()" style="font-size:13px;padding:9px 20px">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" style="width:14px;height:14px"><path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h3.764a1.5 1.5 0 0 1 1.06.44l.94.94H13.5A1.5 1.5 0 0 1 15 5v7a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12V3.5z"></path></svg>
+              Selecionar pasta
+            </button>
+            <div style="margin-top:14px;font-size:11px;color:var(--text3)">Chrome / Edge 86+ · Os arquivos são lidos localmente, nunca enviados a servidores externos.</div>
+          </div>
+        </div>
+
+        <!-- Pasta conectada -->
+        <div id="repo-connected" style="display:none">
+          <div class="card" style="margin-bottom:14px">
+            <div style="display:flex;align-items:center;gap:12px">
+              <div style="font-size:24px">📂</div>
+              <div style="flex:1">
+                <div style="font-size:13px;font-weight:600" id="repo-folder-name">—</div>
+                <div style="font-size:11px;color:var(--text3);margin-top:2px" id="repo-folder-meta">—</div>
+              </div>
+              <div style="display:flex;gap:8px">
+                <button class="btn btn-sm" id="btn-verificar" onclick="verificarNovos()">
+                  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" style="width:13px;height:13px"><path d="M13.5 8A5.5 5.5 0 1 1 8 2.5"></path><path d="M11 1v4h4"></path></svg>
+                  Verificar novos
+                </button>
+                <button class="btn btn-sm" onclick="desconectarPasta()">✕ Desconectar</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Novos arquivos detectados -->
+          <div id="repo-novos-wrap" style="display:none;margin-bottom:14px">
+            <div class="alert alert-warn" style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+              <span style="font-size:18px">🆕</span>
+              <div style="flex:1">
+                <b id="repo-novos-count">0 novo(s)</b> arquivo(s) detectado(s) desde a última verificação.
+              </div>
+              <button class="btn btn-sm btn-primary" onclick="abrirBatch()">✦ Classificar e adicionar</button>
+            </div>
+            <div id="repo-novos-list"></div>
+          </div>
+
+          <!-- Classificação em lote via IA -->
+          <div id="repo-batch-wrap" style="display:none;margin-bottom:14px">
+            <div class="card">
+              <div class="card-title">Classificação automática via IA</div>
+              <div class="alert alert-info" style="margin-bottom:10px;font-size:12px">
+                A IA analisará cada PDF e sugerirá automaticamente tipo,
+ fase, réu e pontos controvertidos. Revise antes de confirmar.
+              </div>
+              <div id="repo-batch-status" class="chunk-list"></div>
+              <div style="display:flex;gap:8px;margin-top:10px">
+                <button class="btn btn-primary btn-sm" id="btn-classificar-ia" onclick="classificarComIA()">✦ Iniciar classificação IA</button>
+                <button class="btn btn-sm" onclick="cancelarBatch()">Cancelar</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Lista de resultados para confirmar -->
+          <div id="repo-resultados-wrap" style="display:none;margin-bottom:14px">
+            <div class="card">
+              <div class="card-title" style="display:flex;align-items:center;justify-content:space-between">
+                Resultados da classificação — revise e confirme
+                <button class="btn btn-sm btn-primary" onclick="confirmarTodos()">✓ Confirmar todos e adicionar à base</button>
+              </div>
+              <div id="repo-resultados-list" style="margin-top:10px"></div>
+            </div>
+          </div>
+
+          <!-- Tabela de arquivos do repositório -->
+          <div class="card">
+            <div class="card-title" style="display:flex;align-items:center;justify-content:space-between">
+              <span>Arquivos na pasta (<span id="repo-total">0</span> PDFs)</span>
+              <input type="text" id="repo-search" placeholder="Filtrar..." style="width:160px;padding:4px 8px;font-size:12px" oninput="renderRepoList(this.value)">
+            </div>
+            <div id="repo-file-list" style="margin-top:10px"></div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- ═══════════════════════════════════════════════════════════════════
+           CURADORIA JURÍDICA — montagem de minuta por blocos decisórios
+           Separação: catálogo JS abaixo | lógica: fnCuradoria* | UI aqui
+      ════════════════════════════════════════════════════════════════════ -->
+      <div class="panel" id="panel-curadoria">
+
+        <!-- Passo 1: entrada do relatório NotebookLM -->
+        <div class="card" id="cur-step1">
+          <div class="card-title" style="display:flex;align-items:center;justify-content:space-between">
+            Passo 1 — Relatório do NotebookLM
+            <span style="font-size:11px;font-weight:400;color:var(--text3)">Cole o relatório estruturado gerado pelo NotebookLM</span>
+          </div>
+          <textarea id="cur-relatorio" rows="8" style="width:100%;font-size:12px;font-family:var(--mono);border:1px solid var(--border2);border-radius:var(--radius);padding:10px;resize:vertical;background:var(--surface2)" placeholder="Cole aqui o relatório do NotebookLM...
+
+Exemplo:
+Processo: 0001234-12.2023.4.01.3800
+Fase: Impugnação ao cumprimento
+Réu: INSS
+Controvérsias identificadas: excesso de execução, índice de correção (IPCA-E), prescrição
+Valor exequendo: R$ 45.000,00"></textarea>
+          <div style="display:flex;gap:8px;margin-top:10px;align-items:center">
+            <button class="btn btn-primary" onclick="curAnalisarRelatorio()">✦ Analisar e detectar controvérsias</button>
+            <button class="btn btn-sm" onclick="document.getElementById('cur-relatorio').value=curExemploRelatorio()">Carregar exemplo</button>
+            <span style="font-size:11px;color:var(--text3);margin-left:auto" id="cur-tokens-info"></span>
+          </div>
+        </div>
+
+        <!-- Passo 2: resultado da análise (oculto até analisar) -->
+        <div id="cur-step2" style="display:none">
+
+          <!-- Cabeçalho do processo identificado -->
+          <div class="card" style="background:var(--accent-light);border-color:var(--accent)">
+            <div style="display:flex;gap:24px;flex-wrap:wrap">
+              <div><div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em">Fase detectada</div><div style="font-weight:600;margin-top:2px" id="cur-fase-detectada">—</div></div>
+              <div><div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em">Réu</div><div style="font-weight:600;margin-top:2px" id="cur-reu-detectado">—</div></div>
+              <div><div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em">Controvérsias detectadas</div><div style="font-weight:600;margin-top:2px" id="cur-controversias-count">—</div></div>
+              <div><div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em">Blocos sugeridos</div><div style="font-weight:600;margin-top:2px" id="cur-blocos-count">—</div></div>
+            </div>
+          </div>
+
+          <!-- Grid: controvérsias + blocos -->
+          <div style="display:grid;grid-template-columns:260px 1fr;gap:14px;margin-bottom:14px">
+
+            <!-- Coluna esquerda: controvérsias detectadas -->
+            <div class="card" style="margin-bottom:0;align-self:start">
+              <div class="card-title">Controvérsias detectadas</div>
+              <div id="cur-lista-controversias" style="display:flex;flex-direction:column;gap:6px"></div>
+              <div class="card-title" style="margin-top:14px;margin-bottom:8px">Adicionar manualmente</div>
+              <select id="cur-add-controversia" style="width:100%;font-size:12px;margin-bottom:6px">
+                <option value="" selected="selected">— selecionar —</option>
+              </select>
+              <button class="btn btn-sm" style="width:100%;justify-content:center" onclick="curAdicionarControversia()">＋ Adicionar</button>
+            </div>
+
+            <!-- Coluna direita: blocos sugeridos -->
+            <div>
+              <div class="card" style="margin-bottom:0">
+                <div class="card-title" style="display:flex;align-items:center;justify-content:space-between">
+                  Blocos decisórios sugeridos
+                  <button class="btn btn-sm" onclick="curSelecionarTodos()">Selecionar todos</button>
+                </div>
+                <div id="cur-lista-blocos" style="display:flex;flex-direction:column;gap:8px"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Minutas do repositório (aparece só se houver resultados) -->
+          <div id="cur-repo-wrap" style="display:none;margin-bottom:14px">
+            <div class="card" style="border-color:var(--ok);background:var(--ok-light)">
+              <div class="card-title" style="display:flex;align-items:center;justify-content:space-between;color:var(--ok)">
+                <span>📂 Minutas similares no repositório</span>
+                <span id="cur-repo-count" style="font-size:11px;font-weight:400;color:var(--ok)"></span>
+              </div>
+              <div style="font-size:11px;color:var(--text2);margin-bottom:10px">
+                Encontradas por metadados (fase + réu + pontos) — <b>sem consumo de tokens</b>.
+                Marque as que deseja incluir como referência na montagem da minuta.
+              </div>
+              <div id="cur-repo-lista" style="display:flex;flex-direction:column;gap:6px"></div>
+              <div id="cur-repo-sem-handle" style="display:none;margin-top:8px" class="alert alert-warn">
+                ⚠ Pasta desconectada. Reconecte o Repositório PDF para poder ler o conteúdo dos arquivos.
+              </div>
+            </div>
+          </div>
+
+          <!-- Passo 3: montar minuta -->
+          <div class="card">
+            <div class="card-title" style="display:flex;align-items:center;justify-content:space-between">
+              Passo 3 — Montar minuta
+              <div style="display:flex;gap:8px">
+                <label style="display:flex;align-items:center;gap:5px;font-size:12px;font-weight:400;cursor:pointer">
+                  <input type="checkbox" id="cur-usar-ia" style="width:auto;accent-color:var(--accent)"> Complementar com IA
+                </label>
+                <button class="btn btn-primary" onclick="curMontarMinuta()">⚖ Montar minuta com blocos selecionados</button>
+              </div>
+            </div>
+            <div style="font-size:12px;color:var(--text3);margin-bottom:10px">
+              Os blocos marcados serão montados <b>na ordem lógica processual</b>, preservando integralmente os fundamentos e precedentes.
+              Se "Complementar com IA" estiver ativo, a IA preencherá apenas as lacunas (campos <code>[CAMPO]</code>) sem reescrever os blocos.
+            </div>
+            <div id="cur-minuta-wrap" style="display:none">
+              <textarea id="cur-minuta-output" rows="20" style="width:100%;font-size:13px;font-family:var(--mono);border:1px solid var(--border2);border-radius:var(--radius);padding:12px;resize:vertical;background:var(--surface2)" readonly="readonly"></textarea>
+              <div style="display:flex;gap:8px;margin-top:8px">
+                <button class="btn btn-sm btn-primary" onclick="navigator.clipboard.writeText(document.getElementById('cur-minuta-output').value)">📋 Copiar</button>
+                <button class="btn btn-sm" onclick="document.getElementById('cur-minuta-output').removeAttribute('readonly');this.textContent='🔒 Bloquear edição';this.onclick=()=>{document.getElementById('cur-minuta-output').setAttribute('readonly','');this.textContent='✏ Editar';this.onclick=null}">✏ Editar</button>
+                <span style="font-size:11px;color:var(--text3);margin-left:auto;align-self:center" id="cur-minuta-stats"></span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- GERAR MINUTA -->
+      <div class="panel" id="panel-assistente">
+        <div class="card">
+          <div class="card-title">Parâmetros do caso concreto</div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Fase(s) processual(is) <span style="font-size:10px;color:var(--text3);font-weight:400;margin-left:4px">selecione uma ou mais</span></label>
+              <div id="ia-fase-list" style="display:flex;flex-direction:column;gap:4px;max-height:180px;overflow-y:auto;border:1px solid var(--border2);border-radius:var(--radius);padding:8px 10px;background:var(--surface)">
+              <label class="fase-check-item"><input type="checkbox" name="ia-fase" value="Apresentação de cálculos"> Apresentação de cálculos</label>
+              <label class="fase-check-item"><input type="checkbox" name="ia-fase" value="Impugnação ao cumprimento"> Impugnação ao cumprimento</label>
+              <label class="fase-check-item"><input type="checkbox" name="ia-fase" value="Manifestação sobre impugnação"> Manifestação sobre impugnação</label>
+              <label class="fase-check-item"><input type="checkbox" name="ia-fase" value="Homologação de cálculos"> Homologação de cálculos</label>
+              <label class="fase-check-item"><input type="checkbox" name="ia-fase" value="Remeter à contadoria"> Remeter à contadoria</label>
+              <label class="fase-check-item"><input type="checkbox" name="ia-fase" value="Expedição de Requisitório"> Expedição de Requisitório</label>
+              <label class="fase-check-item"><input type="checkbox" name="ia-fase" value="Converter em cumprimento de sentença"> Converter em cumprimento de sentença</label>
+              <label class="fase-check-item"><input type="checkbox" name="ia-fase" value="Decisão — Medidas restritivas"> Decisão — Medidas restritivas</label>
+              <label class="fase-check-item"><input type="checkbox" name="ia-fase" value="Sentença de extinção pelo pagamento"> Sentença de extinção pelo pagamento</label>
+              <label class="fase-check-item"><input type="checkbox" name="ia-fase" value="Cumprimento efetivo"> Cumprimento efetivo</label>
+              </div>
+              <div style="font-size:11px;color:var(--text3);margin-top:3px" id="ia-fase-resumo">Nenhuma fase selecionada</div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Réu / Executado</label>
+              <select id="ia-reu">
+                <option selected="selected">INSS</option>
+                <option>União Federal</option>
+                <option>FUNASA</option>
+                <option>UFMG</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Ponto controvertido principal</label>
+              <select id="ia-ponto">
+                <option selected="selected">Índice de correção (INPC × IPCA-E)</option>
+                <option>Taxa de juros (TR × SELIC)</option>
+                <option>FUSEX / Pensão Militar / descontos obrigatórios</option>
+                <option>Marco inicial da correção</option>
+                <option>Excesso de execução</option>
+                <option>Prescrição quinquenal</option>
+                <option>Renúncia para RPV</option>
+                <option>Honorários no cumprimento</option>
+                <option>Sem controvérsia — seguimento normal</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Modalidade</label>
+              <select id="ia-tipo">
+                <option selected="selected">RPV — Pequeno valor</option>
+                <option>Precatório</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group" style="margin-bottom:12px">
+            <label class="form-label">Resumo dos autos / informações relevantes</label>
+            <textarea id="ia-input" placeholder="Cole aqui o resumo dos autos, último despacho, valores discutidos, posição das partes, número do evento da impugnação, datas relevantes..."></textarea>
+          </div>
+
+          <div style="margin-bottom:12px">
+            <div class="form-label" style="margin-bottom:6px">Peças em PDF para análise (opcional — máx. 100 pág. por arquivo)</div>
+            <div style="display:flex;gap:8px;align-items:center">
+              <button class="btn btn-sm" onclick="document.getElementById('pdf-input').click()">📎 Anexar PDF(s)</button>
+              <span id="pdf-count" style="font-size:12px;color:var(--text3)">Nenhum arquivo</span>
+              <input type="file" id="pdf-input" multiple="" accept=".pdf" style="display:none" onchange="handlePdfAttach(this.files)">
+            </div>
+            <div id="chunk-status" class="chunk-list" style="margin-top:8px"></div>
+          </div>
+
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-primary" onclick="gerarMinuta()" id="btn-gerar">✦ Gerar minuta de decisão</button>
+            <button class="btn" onclick="limparAssistente()">↺ Limpar</button>
+            <button class="btn btn-sm" onclick="copiarMinuta()" id="btn-copiar" style="display:none;margin-left:auto">⎘ Copiar minuta</button>
+          </div>
+        </div>
+
+        <div class="loading-bar" id="loading-bar">
+          <span class="spinner"></span> <span id="loading-msg">Analisando documentos e consultando base de modelos...</span>
+        </div>
+        <div class="minuta-box" id="minuta-output"></div>
+      </div>
+
+      <!-- CONFIGURAÇÕES -->
+      <div class="panel" id="panel-config">
+        <div class="card">
+          <div class="card-title">Provedor de IA</div>
+          <div class="settings-row">
+            <div>
+              <div class="settings-label">Selecionar provedor</div>
+              <div class="settings-desc">Escolha qual API será usada para gerar as minutas.</div>
+            </div>
+            <div style="display:flex;gap:8px">
+              <button class="btn" id="btn-provider-anthropic" onclick="setProvider('anthropic')" style="font-size:12px">🟣 Anthropic (Claude)</button>
+              <button class="btn" id="btn-provider-openai" onclick="setProvider('openai')" style="font-size:12px">🟢 OpenAI (GPT)</button>
+            </div>
+          </div>
+          <div class="alert alert-info" id="provider-badge" style="margin-top:4px;margin-bottom:0;font-size:12px"></div>
+        </div>
+
+        <div class="card" id="card-anthropic">
+          <div class="card-title">Chave de API — Anthropic (Claude)</div>
+          <div class="settings-row">
+            <div>
+              <div class="settings-label">Chave atual</div>
+              <div class="settings-desc">Salva localmente no navegador. Nunca enviada a terceiros.</div>
+            </div>
+            <div class="api-key-display" id="api-key-display">••••••••••••••••</div>
+          </div>
+          <div class="form-row" style="margin-top:12px">
+            <div class="form-group">
+              <label class="form-label">Nova chave de API</label>
+              <input type="password" id="api-key-input" placeholder="sk-ant-api03-...">
+            </div>
+            <div class="form-group" style="justify-content:flex-end">
+              <button class="btn btn-primary" style="align-self:flex-end" onclick="saveApiKey()">Salvar chave</button>
+            </div>
+          </div>
+          <div class="alert alert-ok" id="api-saved" style="display:none">✓ Chave Anthropic salva com sucesso.</div>
+          <div class="alert alert-info" style="margin-top:8px;margin-bottom:0">
+            <b>Como obter:</b> acesse <a href="https://console.anthropic.com/" target="_blank" style="color:var(--accent)">console.anthropic.com</a> → API Keys → Create Key.
+          </div>
+        </div>
+
+        <div class="card" id="card-openai" style="display:none">
+          <div class="card-title">Chave de API — OpenAI (GPT)</div>
+          <div class="settings-row">
+            <div>
+              <div class="settings-label">Chave atual</div>
+              <div class="settings-desc">Salva localmente no navegador. Nunca enviada a terceiros.</div>
+            </div>
+            <div class="api-key-display" id="oai-key-display">••••••••••••••••</div>
+          </div>
+          <div class="form-row" style="margin-top:12px">
+            <div class="form-group">
+              <label class="form-label">Nova chave de API</label>
+              <input type="password" id="oai-key-input" placeholder="sk-...">
+            </div>
+            <div class="form-group" style="justify-content:flex-end">
+              <button class="btn btn-primary" style="align-self:flex-end" onclick="saveOaiKey()">Salvar chave</button>
+            </div>
+          </div>
+          <div class="alert alert-ok" id="oai-saved" style="display:none">✓ Chave OpenAI salva com sucesso.</div>
+          <div class="alert alert-info" style="margin-top:8px;margin-bottom:0">
+            <b>Como obter:</b> acesse <a href="https://platform.openai.com/api-keys" target="_blank" style="color:var(--accent)">platform.openai.com/api-keys</a> → Create new secret key.
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Credenciais de acesso</div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Usuário</label>
+              <input type="text" id="cred-user" placeholder="magistrado">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Nova senha</label>
+              <input type="password" id="cred-pass" placeholder="mínimo 6 caracteres">
+            </div>
+          </div>
+          <button class="btn btn-primary" onclick="saveCredentials()">Salvar credenciais</button>
+          <div class="alert alert-ok" id="cred-saved" style="display:none;margin-top:8px;margin-bottom:0">✓ Credenciais atualizadas.</div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Modelo de linguagem</div>
+          <div class="settings-row">
+            <div>
+              <div class="settings-label">Modelo ativo</div>
+              <div class="settings-desc">Controla qualidade e custo das minutas geradas. Varia conforme o provedor selecionado.</div>
+            </div>
+            <select id="model-select" style="width:300px" onchange="saveModel()">
+              <optgroup label="🟣 Anthropic — Claude" id="optgroup-anthropic">
+                <option value="claude-sonnet-4-6" selected="selected">Claude Sonnet 4.6 — Recomendado</option>
+                <option value="claude-haiku-4-5-20251001">Claude Haiku 4.5 — Econômico</option>
+                <option value="claude-opus-4-7">Claude Opus 4.7 — Máxima qualidade</option>
+              </optgroup>
+              <optgroup label="🟢 OpenAI — GPT" id="optgroup-openai">
+                <option value="gpt-4o">GPT-4o — Recomendado</option>
+                <option value="gpt-4o-mini">GPT-4o mini — Econômico</option>
+                <option value="gpt-4-turbo">GPT-4 Turbo — Alta qualidade</option>
+              </optgroup>
+            </select>
+          </div>
+        </div>
+
+        <div class="card" id="card-filtros">
+          <div class="card-title" style="display:flex;align-items:center;justify-content:space-between">
+            Filtro de PDFs por nome de arquivo
+            <span class="tag tag-ok" id="filtro-status-badge">● Filtro ativo</span>
+          </div>
+          <div class="alert alert-info" style="font-size:12px;margin-bottom:12px">
+            <b>Como funciona:</b> antes de enviar qualquer PDF à API, o sistema verifica se o nome do arquivo contém os termos configurados abaixo.
+            PDFs que <b>não correspondem</b> são ignorados — sem custo de tokens. O nome do arquivo é o critério de identificação.
+          </div>
+
+          <!-- Toggle geral -->
+          <div class="settings-row" style="padding-bottom:12px">
+            <div>
+              <div class="settings-label">Ativar filtro por nome</div>
+              <div class="settings-desc">Quando desativado, todos os PDFs são enviados sem filtro.</div>
+            </div>
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+              <input type="checkbox" id="filtro-ativo" onchange="toggleFiltro()" style="width:auto;accent-color:var(--accent)">
+              <span id="filtro-toggle-label" style="font-size:12px;font-weight:500">Desativado</span>
+            </label>
+          </div>
+
+          <!-- Modo de combinação -->
+          <div class="settings-row" style="padding-bottom:12px" id="filtro-modo-row">
+            <div>
+              <div class="settings-label">Modo de combinação</div>
+              <div class="settings-desc">Define como as categorias se combinam entre si.</div>
+            </div>
+            <select id="filtro-modo" style="width:220px" onchange="salvarFiltros()">
+              <option value="AND" selected="selected">Todas as categorias (AND)</option>
+              <option value="OR">Qualquer categoria (OR)</option>
+            </select>
+          </div>
+
+          <!-- Categorias de filtro -->
+          <div id="filtro-categorias" style="display:none">
+            <div style="font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;padding-top:4px">
+              Categorias de filtro
+            </div>
+
+            <!-- Espécie -->
+            <div class="card" style="border:1px solid var(--border);padding:12px;margin-bottom:10px">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+                <div>
+                  <span style="font-size:12px;font-weight:600">Espécie / Tipo de documento</span>
+                  <div style="font-size:11px;color:var(--text3);margin-top:1px">Ex: <code>despacho</code>, <code>decisao</code>, <code>sentenca</code></div>
+                </div>
+                <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:11px">
+                  <input type="checkbox" id="filtro-especie-ativo" onchange="salvarFiltros()" style="width:auto;accent-color:var(--accent)"> Ativo
+                </label>
+              </div>
+              <div id="filtro-especie-tags" class="filtro-tag-container"></div>
+              <div style="display:flex;gap:6px;margin-top:8px">
+                <input type="text" id="filtro-especie-input" placeholder="Adicionar termo..." style="flex:1;padding:5px 8px;font-size:12px" onkeydown="if(event.key==='Enter')addFiltroTag('especie')">
+                <button class="btn btn-sm" onclick="addFiltroTag('especie')">＋</button>
+              </div>
+              <div style="margin-top:8px">
+                <span style="font-size:10px;color:var(--text3)">Modo interno:</span>
+                <select id="filtro-especie-modo" style="font-size:11px;padding:2px 6px;margin-left:4px" onchange="salvarFiltros()">
+                  <option value="OR" selected="selected">Qualquer um (OR)</option>
+                  <option value="AND">Todos (AND)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Partes -->
+            <div class="card" style="border:1px solid var(--border);padding:12px;margin-bottom:10px">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+                <div>
+                  <span style="font-size:12px;font-weight:600">Partes (réu / exequente)</span>
+                  <div style="font-size:11px;color:var(--text3);margin-top:1px">Ex: <code>inss</code>, <code>uniao</code>, <code>funasa</code>, <code>silva</code></div>
+                </div>
+                <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:11px">
+                  <input type="checkbox" id="filtro-partes-ativo" onchange="salvarFiltros()" style="width:auto;accent-color:var(--accent)"> Ativo
+                </label>
+              </div>
+              <div id="filtro-partes-tags" class="filtro-tag-container"></div>
+              <div style="display:flex;gap:6px;margin-top:8px">
+                <input type="text" id="filtro-partes-input" placeholder="Adicionar termo..." style="flex:1;padding:5px 8px;font-size:12px" onkeydown="if(event.key==='Enter')addFiltroTag('partes')">
+                <button class="btn btn-sm" onclick="addFiltroTag('partes')">＋</button>
+              </div>
+              <div style="margin-top:8px">
+                <span style="font-size:10px;color:var(--text3)">Modo interno:</span>
+                <select id="filtro-partes-modo" style="font-size:11px;padding:2px 6px;margin-left:4px" onchange="salvarFiltros()">
+                  <option value="OR" selected="selected">Qualquer um (OR)</option>
+                  <option value="AND">Todos (AND)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Assunto -->
+            <div class="card" style="border:1px solid var(--border);padding:12px;margin-bottom:10px">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+                <div>
+                  <span style="font-size:12px;font-weight:600">Assunto / Ponto controvertido</span>
+                  <div style="font-size:11px;color:var(--text3);margin-top:1px">Ex: <code>rpv</code>, <code>precatorio</code>, <code>honorarios</code>, <code>impugnacao</code></div>
+                </div>
+                <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:11px">
+                  <input type="checkbox" id="filtro-assunto-ativo" onchange="salvarFiltros()" style="width:auto;accent-color:var(--accent)"> Ativo
+                </label>
+              </div>
+              <div id="filtro-assunto-tags" class="filtro-tag-container"></div>
+              <div style="display:flex;gap:6px;margin-top:8px">
+                <input type="text" id="filtro-assunto-input" placeholder="Adicionar termo..." style="flex:1;padding:5px 8px;font-size:12px" onkeydown="if(event.key==='Enter')addFiltroTag('assunto')">
+                <button class="btn btn-sm" onclick="addFiltroTag('assunto')">＋</button>
+              </div>
+              <div style="margin-top:8px">
+                <span style="font-size:10px;color:var(--text3)">Modo interno:</span>
+                <select id="filtro-assunto-modo" style="font-size:11px;padding:2px 6px;margin-left:4px" onchange="salvarFiltros()">
+                  <option value="OR" selected="selected">Qualquer um (OR)</option>
+                  <option value="AND">Todos (AND)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Teste ao vivo -->
+            <div class="card" style="border:1px solid var(--border);padding:12px;background:var(--surface2)">
+              <div style="font-size:11px;font-weight:600;color:var(--text2);margin-bottom:8px;text-transform:uppercase;letter-spacing:.05em">Teste de filtro</div>
+              <div style="display:flex;gap:8px">
+                <input type="text" id="filtro-teste-input" placeholder="Digite um nome de arquivo para testar..." style="flex:1;font-size:12px" oninput="testarFiltro(this.value)">
+              </div>
+              <div id="filtro-teste-resultado" style="margin-top:8px;font-size:12px;display:none"></div>
+            </div>
+          </div>
+
+          <div style="display:flex;gap:8px;margin-top:12px">
+            <button class="btn btn-sm" onclick="salvarFiltros()">💾 Salvar filtros</button>
+            <button class="btn btn-sm" onclick="limparFiltros()">↺ Limpar tudo</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Sobre o sistema</div>
+          <div style="font-size:12px;color:var(--text2);line-height:1.8">
+            <b>Guia_Mestre_Execucao_Federal</b> v1.0<br>
+            Assistente Jurídico especializado em Cumprimento de Sentença contra a Fazenda Pública Federal.<br>
+            Réus cobertos: INSS, União Federal, FUNASA, UFMG e demais entes federais.<br>
+            <br>
+            <b>Funcionamento offline:</b> o sistema roda localmente no navegador. A API Anthropic é chamada apenas ao gerar minutas.<br>
+            <b>Dados:</b> todos os modelos e configurações são armazenados no <code style="background:var(--surface2);padding:1px 4px;border-radius:3px">localStorage</code> do navegador, sem envio a servidores externos.<br>
+            <b>PDFs grandes:</b> processados em lotes de 100 páginas. 
+Para processos de 500–1000 páginas, recomenda-se carregar apenas as 
+peças relevantes (sentença + cálculos + impugnação).
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modal-title"></div>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div id="modal-tags" style="margin-bottom:12px"></div>
+    <div class="decision-text" id="modal-text"></div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-primary" onclick="usarModelo()">Usar como base para minuta</button>
+      <button class="btn" onclick="closeModal()">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── CONFIG & AUTH ───────────────────────────────────────────────────────────
+const DEFAULT_USER = 'magistrado';
+const DEFAULT_PASS = 'guia2024';
+
+function cfg(k, def) {
+  try { const v = localStorage.getItem(k); return v !== null ? v : def; } catch { return def; }
+}
+function cfgSet(k, v) { try { localStorage.setItem(k, v); } catch {} }
+
+function getUser() { return cfg('gm_user', DEFAULT_USER); }
+function getPass() { return cfg('gm_pass', DEFAULT_PASS); }
+
+function restaurarCredenciaisPadrao() {
+  try { localStorage.removeItem('gm_user'); localStorage.removeItem('gm_pass'); } catch {}
+  document.getElementById('login-user').value = '';
+  document.getElementById('login-pass').value = '';
+  document.getElementById('login-error').style.display = 'none';
+  const btn = event.target;
+  btn.textContent = '✓ Restauradas — use magistrado / guia2024';
+  btn.style.color = 'var(--ok)';
+  setTimeout(() => { btn.textContent = '↺ Restaurar credenciais padrão'; btn.style.color = ''; }, 3500);
+}
+
+function getApiKey() { return cfg('gm_apikey', ''); }
+function getOaiKey() { return cfg('gm_oaikey', ''); }
+function getModel() { return cfg('gm_model', 'claude-sonnet-4-6'); }
+function getProvider() { return cfg('gm_provider', 'anthropic'); }
+
+function setProvider(p) {
+  cfgSet('gm_provider', p);
+  document.getElementById('card-anthropic').style.display = p === 'anthropic' ? '' : 'none';
+  document.getElementById('card-openai').style.display = p === 'openai' ? '' : 'none';
+  document.getElementById('btn-provider-anthropic').className = 'btn' + (p === 'anthropic' ? ' btn-primary' : '');
+  document.getElementById('btn-provider-openai').className = 'btn' + (p === 'openai' ? ' btn-primary' : '');
+  const badge = document.getElementById('provider-badge');
+  if (p === 'anthropic') {
+    badge.textContent = '🟣 Provedor ativo: Anthropic (Claude) — Recomendado para minutas jurídicas longas com suporte a PDF nativo.';
+  } else {
+    badge.textContent = '🟢 Provedor ativo: OpenAI (GPT) — Recomendado se você já possui chave OpenAI. PDFs enviados como texto extraído.';
+  }
+  // Auto-select a compatible model
+  const modelSel = document.getElementById('model-select');
+  const currentModel = modelSel.value;
+  const isAnthropicModel = currentModel.startsWith('claude');
+  const isOpenaiModel = currentModel.startsWith('gpt');
+  if (p === 'anthropic' && isOpenaiModel) modelSel.value = 'claude-sonnet-4-6';
+  if (p === 'openai' && isAnthropicModel) modelSel.value = 'gpt-4o';
+  saveModel();
+}
+
+function doLogin() {
+  const u = document.getElementById('login-user').value.trim();
+  const p = document.getElementById('login-pass').value;
+  if (u === getUser() && p === getPass()) {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'flex';
+    document.getElementById('app').style.flexDirection = 'column';
+    document.getElementById('topbar-username').textContent = u;
+    document.getElementById('model-select').value = getModel();
+    updateApiKeyDisplay();
+    setProvider(getProvider());
+    carregarFiltroUI();
+    renderModels('');
+    loadStats();
+  } else {
+    document.getElementById('login-error').style.display = 'block';
+  }
+}
+
+function doLogout() {
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('login-pass').value = '';
+  document.getElementById('login-error').style.display = 'none';
+}
+
+function saveApiKey() {
+  const k = document.getElementById('api-key-input').value.trim();
+  if (!k.startsWith('sk-')) { alert('Chave inválida. Deve começar com sk-'); return; }
+  cfgSet('gm_apikey', k);
+  document.getElementById('api-key-input').value = '';
+  updateApiKeyDisplay();
+  const el = document.getElementById('api-saved');
+  el.style.display = 'block';
+  setTimeout(() => el.style.display = 'none', 3000);
+}
+
+function saveOaiKey() {
+  const k = document.getElementById('oai-key-input').value.trim();
+  if (!k.startsWith('sk-')) { alert('Chave inválida. Deve começar com sk-'); return; }
+  cfgSet('gm_oaikey', k);
+  document.getElementById('oai-key-input').value = '';
+  updateOaiKeyDisplay();
+  const el = document.getElementById('oai-saved');
+  el.style.display = 'block';
+  setTimeout(() => el.style.display = 'none', 3000);
+}
+
+function updateApiKeyDisplay() {
+  const k = getApiKey();
+  const d = document.getElementById('api-key-display');
+  d.textContent = k ? k.substring(0, 12) + '••••••••••••' : 'Não configurada';
+}
+
+function updateOaiKeyDisplay() {
+  const k = getOaiKey();
+  const d = document.getElementById('oai-key-display');
+  d.textContent = k ? k.substring(0, 10) + '••••••••••••' : 'Não configurada';
+}
+
+function saveCredentials() {
+  const u = document.getElementById('cred-user').value.trim();
+  const p = document.getElementById('cred-pass').value;
+  if (!u || p.length < 6) { alert('Usuário e senha (mín. 6 chars) obrigatórios.'); return; }
+  cfgSet('gm_user', u);
+  cfgSet('gm_pass', p);
+  const el = document.getElementById('cred-saved');
+  el.style.display = 'block';
+  setTimeout(() => el.style.display = 'none', 3000);
+}
+
+function saveModel() {
+  cfgSet('gm_model', document.getElementById('model-select').value);
+}
+
+// ─── NAVIGATION ──────────────────────────────────────────────────────────────
+function nav(name, el) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  if (el) el.classList.add('active');
+  if (name === 'base') renderModels(document.getElementById('search-input').value);
+}
+
+// ─── MODELS DATABASE ─────────────────────────────────────────────────────────
+const SEED_MODELS = [
+  { id: 1, tipo: 'Decisão interlocutória', fase: 'Homologação de cálculos', reu: 'INSS', cs_tipo: 'RPV — Pequeno valor', titulo: 'Homologação de cálculos — INSS — RPV', pontos: ['Índice de correção (INPC × IPCA-E)', 'Taxa de juros (TR × SELIC)'], text: `DECISÃO\n\nTrata-se de cumprimento de sentença em que o exequente apresentou memória de cálculo no valor de R$ [VALOR], correspondente às diferenças devidas pelo INSS.\n\nIntimado, o INSS apresentou impugnação sustentando excesso de execução decorrente da utilização de índice de correção monetária diverso do fixado pelo título judicial.\n\nAnalisando os autos, verifico que:\n\n(i) quanto à correção monetária: aplica-se o INPC para períodos anteriores à vigência da Lei 11.960/09 e o índice da caderneta de poupança para períodos posteriores, conforme Tema 905/STJ;\n\n(ii) quanto à taxa de juros: 0,5% ao mês até a Lei 11.960/09, e juros da poupança a partir daí, nos termos do art. 1º-F da Lei 9.494/97.\n\nDetermino realização de perícia contábil para apuração do valor correto.\n\nIntime-se.` },
+  { id: 2, tipo: 'Despacho', fase: 'Apresentação de cálculos', reu: 'União Federal', cs_tipo: 'Precatório', titulo: 'Despacho — Apresentação de cálculos — União', pontos: ['Marco inicial da correção', 'Natureza do crédito'], text: `DESPACHO\n\nApresentados os cálculos pelo exequente, intime-se a União Federal para, no prazo de 30 (trinta) dias, manifestar-se sobre os valores apurados, nos termos do art. 535 do CPC.\n\nNa manifestação, deverá a executada indicar, de forma fundamentada e acompanhada de planilha de cálculo, os eventuais erros e os valores que entende corretos, sob pena de preclusão.\n\nDecorrido o prazo, tornem conclusos.\n\nIntime-se.` },
+  { id: 3, tipo: 'Decisão interlocutória', fase: 'Impugnação ao cumprimento', reu: 'INSS', cs_tipo: 'RPV — Pequeno valor', titulo: 'Decisão — Impugnação por excesso — INSS', pontos: ['Excesso de execução', 'Prescrição quinquenal'], text: `DECISÃO\n\nCuida-se de impugnação ao cumprimento de sentença apresentada pelo INSS, por excesso de execução e prescrição.\n\nDa prescrição: rejeito a alegação. O prazo prescricional de cinco anos conta-se do trânsito em julgado (Súmula 150/STF).\n\nDo excesso de execução: a impugnante não apresentou planilha demonstrando os valores que entende devidos, descumprindo o §2º do art. 525 do CPC, razão pela qual não a conheço neste fundamento.\n\nProssiga-se com a execução pelo valor indicado pelo exequente.\n\nIntime-se.` },
+  { id: 4, tipo: 'Despacho', fase: 'Expedição de Requisitório', reu: 'FUNASA', cs_tipo: 'RPV — Pequeno valor', titulo: 'Despacho — Expedição de Requisitório — FUNASA', pontos: ['Renúncia para RPV', 'Competência JEF × JF'], text: `DESPACHO\n\nHomologados os cálculos, verifica-se que o valor total da execução é de R$ [VALOR].\n\nConsiderando que o valor não ultrapassa 60 (sessenta) salários mínimos, proceda-se à expedição de Requisição de Pequeno Valor — RPV, observando:\n\n(i) o exequente deverá renunciar ao excedente caso o valor supere o teto, nos termos do art. 17, §4º, da Lei 10.259/01;\n\n(ii) verificada a renúncia, expeça-se a RPV.\n\nIntime-se o exequente em 10 (dez) dias.` },
+  { id: 5, tipo: 'Sentença', fase: 'Expedição de Requisitório', reu: 'UFMG', cs_tipo: 'Precatório', titulo: 'Sentença de encerramento — Precatório — UFMG', pontos: ['Honorários no CS', 'Natureza do crédito'], text: `SENTENÇA\n\nHavendo trânsito em julgado da homologação dos cálculos no valor de R$ [VALOR], expeça-se Ofício Requisitório (Precatório) ao TRF competente, nos termos do art. 100 da CF.\n\nHonorários advocatícios: fixo em 10% sobre o valor da execução, nos termos do art. 85, §3º, do CPC.\n\nApós a expedição, arquivem-se os autos, ressalvado direito de reabertura para acompanhamento do pagamento.\n\nIntimem-se as partes.` }
+];
+
+function getModels() {
+  try {
+    const raw = localStorage.getItem('gm_models');
+    return raw ? JSON.parse(raw) : JSON.parse(JSON.stringify(SEED_MODELS));
+  } catch { return JSON.parse(JSON.stringify(SEED_MODELS)); }
+}
+
+function saveModels(models) {
+  try { localStorage.setItem('gm_models', JSON.stringify(models)); } catch {}
+}
+
+function loadStats() {
+  const m = getModels();
+  document.getElementById('stat-modelos').textContent = m.length;
+  document.getElementById('badge-base').textContent = m.length;
+}
+
+let currentTab = 'todos';
+let currentModelId = null;
+
+function renderModels(query) {
+  const models = getModels();
+  const list = document.getElementById('models-list');
+  let filtered = models.filter(m => currentTab === 'todos' || m.tipo === currentTab);
+  if (query) {
+    const q = query.toLowerCase();
+    filtered = filtered.filter(m =>
+      m.titulo.toLowerCase().includes(q) ||
+      m.reu.toLowerCase().includes(q) ||
+      m.fase.toLowerCase().includes(q) ||
+      (m.pontos || []).some(p => p.toLowerCase().includes(q))
+    );
+  }
+  list.innerHTML = filtered.map(m => {
+    const tagCls = m.fase.includes('Exped') ? 'tag-ok' : m.fase.includes('Impug') ? 'tag-red' : m.fase.includes('Homol') ? 'tag-blue' : 'tag-warn';
+    return `<div class="model-card">
+      <div class="model-header">
+        <span class="model-id">MOD-${String(m.id).padStart(3,'0')}</span>
+        <span class="model-title">${m.titulo}</span>
+        <span class="tag ${tagCls}" style="white-space:nowrap">${m.tipo}</span>
+      </div>
+      <div class="model-meta">
+        <div class="model-meta-item"><div class="lbl">Réu</div><div class="val">${m.reu}</div></div>
+        <div class="model-meta-item"><div class="lbl">Fase</div><div class="val">${m.fase}</div></div>
+        <div class="model-meta-item"><div class="lbl">Modalidade</div><div class="val">${m.cs_tipo}</div></div>
+      </div>
+      <div>${(m.pontos||[]).map(p => `<span class="tag tag-blue">${p}</span>`).join('')}</div>
+      <div class="model-actions">
+        <button class="btn btn-sm" onclick="openModal(${m.id})">👁 Ver modelo</button>
+        <button class="btn btn-sm" onclick="usarModeloId(${m.id})">⎘ Usar como base</button>
+        <button class="btn btn-sm btn-danger" onclick="deleteModel(${m.id})" style="margin-left:auto">✕ Remover</button>
+      </div>
+    </div>`;
+  }).join('') || '<div style="text-align:center;padding:32px;color:var(--text3)">Nenhum modelo encontrado.</div>';
+}
+
+function filterTab(tab, el) {
+  currentTab = tab;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  renderModels(document.getElementById('search-input')?.value || '');
+}
+
+function deleteModel(id) {
+  if (!confirm('Remover este modelo da base?')) return;
+  const models = getModels().filter(m => m.id !== id);
+  saveModels(models);
+  loadStats();
+  renderModels('');
+}
+
+// ─── UPLOAD ──────────────────────────────────────────────────────────────────
+function handleFiles(files) {
+  const list = document.getElementById('file-list');
+  Array.from(files).forEach(f => {
+    const div = document.createElement('div');
+    div.className = 'file-item';
+    div.innerHTML = `<span class="file-icon">📄</span>
+      <div class="file-info">
+        <div class="file-name">${f.name}</div>
+        <div class="file-meta">${(f.size / 1024).toFixed(0)} KB — ${new Date().toLocaleDateString('pt-BR')}</div>
+      </div>
+      <span class="file-status status-proc">Carregado</span>`;
+    list.prepend(div);
+    setTimeout(() => {
+      div.querySelector('.file-status').textContent = '✓ Pronto para adicionar';
+      div.querySelector('.file-status').className = 'file-status status-ok';
+    }, 800);
+  });
+}
+
+function addToBase() {
+  const tipo = document.getElementById('doc-tipo').value;
+  const fase = document.getElementById('doc-fase').value;
+  const reu = document.getElementById('doc-reu').value;
+  const cs = document.getElementById('doc-cs-tipo').value;
+  const pontosRaw = document.getElementById('doc-pontos').value;
+  const pontos = pontosRaw ? pontosRaw.split(',').map(p => p.trim()).filter(Boolean) : ['A classificar'];
+  const models = getModels();
+  const newId = Math.max(...models.map(m => m.id), 0) + 1;
+  models.push({
+    id: newId, tipo, fase, reu, cs_tipo: cs,
+    titulo: `${tipo} — ${reu} — ${fase}`,
+    pontos,
+    text: `[Texto do modelo a ser editado]\n\nTipo: ${tipo}\nFase: ${fase}\nRéu: ${reu}\nModalidade: ${cs}\nPontos: ${pontos.join(', ')}`
+  });
+  saveModels(models);
+  loadStats();
+  document.getElementById('doc-pontos').value = '';
+  alert(`✓ Modelo MOD-${String(newId).padStart(3,'0')} adicionado à base.`);
+}
+
+// ─── MODAL ───────────────────────────────────────────────────────────────────
+function openModal(id) {
+  const m = getModels().find(x => x.id === id);
+  if (!m) return;
+  currentModelId = id;
+  document.getElementById('modal-title').textContent = m.titulo;
+  document.getElementById('modal-tags').innerHTML = (m.pontos||[]).map(p => `<span class="tag tag-blue">${p}</span>`).join('') + `<span class="tag tag-gray">${m.reu}</span><span class="tag tag-gray">${m.tipo}</span>`;
+  document.getElementById('modal-text').textContent = m.text;
+  document.getElementById('modal').classList.add('open');
+}
+
+function closeModal() { document.getElementById('modal').classList.remove('open'); }
+
+function usarModelo() {
+  if (currentModelId) { usarModeloId(currentModelId); closeModal(); }
+}
+
+function usarModeloId(id) {
+  const m = getModels().find(x => x.id === id);
+  if (!m) return;
+  // Usa querySelector pelo onclick em vez de índice frágil
+  const navEl = document.querySelector('.nav-item[onclick*="assistente"]');
+  nav('assistente', navEl);
+  document.getElementById('ia-reu').value = m.reu;
+  document.getElementById('ia-input').value = `[Baseado no modelo MOD-${String(id).padStart(3,'0')}: ${m.titulo}]\n\nSubstitua este texto pelo resumo do caso concreto.`;
+}
+
+// ─── PDF ATTACHMENT ───────────────────────────────────────────────────────────
+let attachedPdfs = [];
+
+function handlePdfAttach(files) {
+  attachedPdfs = Array.from(files);
+  const count = document.getElementById('pdf-count');
+  count.textContent = `${attachedPdfs.length} arquivo(s) — ${attachedPdfs.reduce((a,f) => a + f.size, 0) > 0 ? (attachedPdfs.reduce((a,f) => a + f.size,0)/1024/1024).toFixed(1) + ' MB' : ''}`;
+}
+
+async function readFileAsBase64(file) {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = () => res(r.result.split(',')[1]);
+    r.onerror = rej;
+    r.readAsDataURL(file);
+  });
+}
+
+// Helper: retorna fases selecionadas nos checkboxes
+function getIaFasesSelecionadas() {
+  return Array.from(document.querySelectorAll('input[name="ia-fase"]:checked')).map(el => el.value);
+}
+
+// Atualiza label de resumo
+function atualizarFaseResumo() {
+  const sels = getIaFasesSelecionadas();
+  const el = document.getElementById('ia-fase-resumo');
+  if (!el) return;
+  el.textContent = sels.length === 0 ? 'Nenhuma fase selecionada'
+    : sels.length === 1 ? sels[0]
+    : `${sels.length} fases: ${sels.join(' + ')}`;
+}
+
+// ─── GERAR MINUTA ─────────────────────────────────────────────────────────────
+async function gerarMinuta() {
+  const provider = getProvider();
+  const apiKey = provider === 'anthropic' ? getApiKey() : getOaiKey();
+
+  if (!apiKey) {
+    const provName = provider === 'anthropic' ? 'Anthropic (Claude)' : 'OpenAI (GPT)';
+    alert(`Configure sua chave de API ${provName} em Configurações antes de gerar minutas.`);
+    nav('config', document.querySelectorAll('.nav-item')[4]);
+    return;
+  }
+
+  const fases = getIaFasesSelecionadas();
+  if (fases.length === 0) { alert('Selecione ao menos uma fase processual.'); return; }
+  const fase = fases.join(' + '); // para compatibilidade com filtro de modelos
+  const reu = document.getElementById('ia-reu').value;
+  const ponto = document.getElementById('ia-ponto').value;
+  const tipo = document.getElementById('ia-tipo').value;
+  const autos = document.getElementById('ia-input').value;
+  const modelo = getModel();
+
+  const models = getModels();
+  const modelosRel = models.filter(m =>
+    m.reu === reu ||
+    (m.pontos||[]).some(p => p.includes(ponto.split('(')[0].trim().substring(0,15))) ||
+    fases.some(fs => m.fase.toLowerCase().includes(fs.split(' ')[0].toLowerCase()))
+  ).slice(0, Math.min(6, 2 * fases.length));
+
+  const exemplos = modelosRel.map(m =>
+    `MODELO [${m.tipo.toUpperCase()} — ${m.fase}]:\n${m.text}`
+  ).join('\n\n---\n\n');
+
+  const systemPrompt = `Você é um Assistente Jurídico Especialista em Cumprimento de Sentença contra a Fazenda Pública Federal, atuando como o sistema Guia_Mestre_Execucao_Federal.
+
+Sua função exclusiva é propor minutas de decisão (despachos, decisões interlocutórias e sentenças) em cumprimento de sentença de obrigação de pagar (RPV e Precatório), baseando-se ESTRITAMENTE nos modelos da base de dados fornecida e nos dados do caso concreto.
+
+REGRAS ABSOLUTAS:
+1. Fundamente SEMPRE com dispositivo legal expresso (CPC, Lei 9.494/97, Lei 10.259/01, CF art. 100, legislação pertinente)
+2. Cite jurisprudência consolidada do STJ e STF quando aplicável (Tema 905/STJ, Súmula 150/STF etc.)
+3. A decisão pode abranger múltiplas fases processuais — componha-a cobrindo TODAS as fases indicadas, na ordem lógica processual
+4. Para campos desconhecidos, use marcadores [CAMPO A PREENCHER]
+5. Linguagem formal, objetiva, direta — sem rodeios
+6. A minuta deve ser imediatamente utilizável com mínima adaptação
+7. Não invente fatos que não constam dos dados fornecidos
+8. Ao final, inclua uma seção "PONTOS DE ATENÇÃO" com alertas sobre o que o magistrado deve verificar antes de assinar
+
+BASE DE MODELOS RELEVANTES:
+${exemplos || '[Base vazia — gerando modelo padrão para a fase]'}`;
+
+  const userText = `Gerar minuta de decisão para o seguinte caso:
+
+FASE(S) PROCESSUAL(IS): ${fases.length > 1 ? fases.map((f,i)=>`(${i+1}) ${f}`).join(' | ') : fases[0]}
+RÉU / EXECUTADO: ${reu}
+MODALIDADE: ${tipo}
+PONTO CONTROVERTIDO PRINCIPAL: ${ponto}
+
+INFORMAÇÕES DOS AUTOS:
+${autos || '(Não informadas — gerar modelo padrão completo para esta fase e réu)'}
+
+Gere a minuta completa, formal e numerada, pronta para uso pelo magistrado.`;
+
+  // ── Processar PDFs anexados ─────────────────────────────────────────────────
+  const chunkDiv = document.getElementById('chunk-status');
+  let pdfTextsForOAI = [];   // usado só no caminho OpenAI
+  let anthropicContent = []; // usado só no caminho Anthropic
+
+  // ── Aplicar filtro por nome antes de enviar à API ─────────────────────────
+  const filtroResult = aplicarFiltroEmLista(attachedPdfs, f => f.name);
+  const pdfsParaEnviar = filtroResult.aprovados;
+  if (filtroResult.filtroAtivo && filtroResult.bloqueados.length > 0) {
+    console.info(`[Filtro] Bloqueados: ${filtroResult.bloqueados.map(f=>f.name).join(', ')}`);
+  }
+
+  if (pdfsParaEnviar.length > 0) {
+    // Mostra aviso de filtro se algum foi bloqueado
+    const avisoFiltro = filtroResult.filtroAtivo && filtroResult.bloqueados.length > 0
+      ? `<div style="font-size:11px;color:var(--warn);padding:4px 8px;background:var(--warn-light);border-radius:4px;margin-bottom:6px">
+          ⚠ Filtro ativo: ${filtroResult.bloqueados.length} PDF(s) ignorado(s) — ${filtroResult.bloqueados.map(f=>f.name).join(', ')}
+         </div>` : '';
+    chunkDiv.innerHTML = avisoFiltro + pdfsParaEnviar.map((f,i) =>
+      `<div class="chunk-item" id="chunk-${i}"><span class="chunk-status" id="cs-${i}"></span>${f.name}</div>`
+    ).join('');
+
+    for (let i = 0; i < pdfsParaEnviar.length; i++) {
+      document.getElementById('cs-' + i).className = 'chunk-status active';
+      setLoading(`Lendo PDF ${i+1}/${pdfsParaEnviar.length}: ${pdfsParaEnviar[i].name}...`);
+      try {
+        const b64 = await readFileAsBase64(pdfsParaEnviar[i]);
+        if (provider === 'anthropic') {
+          anthropicContent.push({
+            type: 'document',
+            source: { type: 'base64', media_type: 'application/pdf', data: b64 }
+          });
+        } else {
+          // OpenAI não aceita PDF nativo — informar nome do arquivo como contexto
+          pdfTextsForOAI.push(`[PDF anexado: ${attachedPdfs[i].name} — conteúdo binário não extraível nesta versão; considere as informações dos autos abaixo]`);
+        }
+        document.getElementById('cs-' + i).className = 'chunk-status done';
+      } catch (e) {
+        document.getElementById('cs-' + i).style.background = 'var(--danger)';
+      }
+    }
+  } else if (filtroResult.filtroAtivo && filtroResult.bloqueados.length > 0) {
+    chunkDiv.innerHTML = `<div style="font-size:11px;color:var(--warn);padding:6px 10px;background:var(--warn-light);border-radius:4px">
+      ⚠ Filtro ativo: todos os ${filtroResult.bloqueados.length} PDF(s) anexado(s) foram bloqueados pelo filtro de nome.<br>
+      Bloqueados: ${filtroResult.bloqueados.map(f=>f.name).join(', ')}
+    </div>`;
+  }
+
+  setLoading('Consultando base de modelos e redigindo minuta...');
+  document.getElementById('minuta-output').style.display = 'none';
+  document.getElementById('btn-copiar').style.display = 'none';
+
+  try {
+    let text = '';
+
+    if (provider === 'anthropic') {
+      // ── Chamada Anthropic ─────────────────────────────────────────────────
+      anthropicContent.push({ type: 'text', text: userText });
+
+      const resp = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': apiKey,
+          'anthropic-version': '2023-06-01',
+          'anthropic-dangerous-direct-browser-access': 'true'
+        },
+        body: JSON.stringify({
+          model: modelo,
+          max_tokens: 2000,
+          system: systemPrompt,
+          messages: [{ role: 'user', content: anthropicContent }]
+        })
+      });
+
+      const data = await resp.json();
+      if (data.error) throw new Error(`Anthropic: ${data.error.message}`);
+      text = data.content?.map(b => b.text || '').join('') || 'Erro ao gerar minuta.';
+
+    } else {
+      // ── Chamada OpenAI ────────────────────────────────────────────────────
+      const oaiUserContent = pdfTextsForOAI.length
+        ? pdfTextsForOAI.join('\n') + '\n\n' + userText
+        : userText;
+
+      const resp = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiKey}`
+        },
+        body: JSON.stringify({
+          model: modelo,
+          max_tokens: 2000,
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: oaiUserContent }
+          ]
+        })
+      });
+
+      const data = await resp.json();
+      if (data.error) throw new Error(`OpenAI: ${data.error.message}`);
+      text = data.choices?.[0]?.message?.content || 'Erro ao gerar minuta.';
+    }
+
+    document.getElementById('minuta-output').textContent = text;
+    document.getElementById('minuta-output').style.display = 'block';
+    document.getElementById('btn-copiar').style.display = 'inline-flex';
+
+  } catch (e) {
+    document.getElementById('minuta-output').textContent =
+      `Erro: ${e.message}\n\nVerifique se a chave de API está correta em Configurações.\n\n` +
+      `Provedor ativo: ${provider === 'anthropic' ? 'Anthropic (Claude)' : 'OpenAI (GPT)'}\n` +
+      `Modelo: ${modelo}`;
+    document.getElementById('minuta-output').style.display = 'block';
+  }
+
+  stopLoading();
+}
+
+function setLoading(msg) {
+  document.getElementById('loading-bar').style.display = 'block';
+  document.getElementById('loading-msg').textContent = msg;
+  document.getElementById('btn-gerar').disabled = true;
+}
+
+function stopLoading() {
+  document.getElementById('loading-bar').style.display = 'none';
+  document.getElementById('btn-gerar').disabled = false;
+}
+
+function limparAssistente() {
+  document.getElementById('ia-input').value = '';
+  document.getElementById('minuta-output').style.display = 'none';
+  document.getElementById('btn-copiar').style.display = 'none';
+  document.getElementById('chunk-status').innerHTML = '';
+  document.getElementById('pdf-count').textContent = 'Nenhum arquivo';
+  attachedPdfs = [];
+  document.getElementById('pdf-input').value = '';
+}
+
+function copiarMinuta() {
+  const t = document.getElementById('minuta-output').textContent;
+  navigator.clipboard.writeText(t).then(() => {
+    const b = document.getElementById('btn-copiar');
+    b.textContent = '✓ Copiado!';
+    setTimeout(() => b.innerHTML = '⎘ Copiar minuta', 2000);
+  });
+}
+
+
+
+// ─── FILTRO DE PDFs POR NOME ──────────────────────────────────────────────────
+// Estrutura salva: { ativo, modo, especie:{ativo,modo,termos[]}, partes:{...}, assunto:{...} }
+
+function getFiltros() {
+  try {
+    const raw = localStorage.getItem('gm_filtros');
+    return raw ? JSON.parse(raw) : {
+      ativo: false, modo: 'AND',
+      especie: { ativo: false, modo: 'OR', termos: [] },
+      partes:  { ativo: false, modo: 'OR', termos: [] },
+      assunto: { ativo: false, modo: 'OR', termos: [] }
+    };
+  } catch { return { ativo: false, modo: 'AND', especie: { ativo: false, modo: 'OR', termos: [] }, partes: { ativo: false, modo: 'OR', termos: [] }, assunto: { ativo: false, modo: 'OR', termos: [] } }; }
+}
+
+function salvarFiltros() {
+  const f = {
+    ativo: document.getElementById('filtro-ativo').checked,
+    modo: document.getElementById('filtro-modo').value,
+    especie: {
+      ativo: document.getElementById('filtro-especie-ativo').checked,
+      modo: document.getElementById('filtro-especie-modo').value,
+      termos: getFiltroTermos('especie')
+    },
+    partes: {
+      ativo: document.getElementById('filtro-partes-ativo').checked,
+      modo: document.getElementById('filtro-partes-modo').value,
+      termos: getFiltroTermos('partes')
+    },
+    assunto: {
+      ativo: document.getElementById('filtro-assunto-ativo').checked,
+      modo: document.getElementById('filtro-assunto-modo').value,
+      termos: getFiltroTermos('assunto')
+    }
+  };
+  localStorage.setItem('gm_filtros', JSON.stringify(f));
+  atualizarFiltroUI(f);
+}
+
+function getFiltroTermos(cat) {
+  return Array.from(document.querySelectorAll(`#filtro-${cat}-tags .filtro-tag`))
+    .map(t => t.dataset.termo);
+}
+
+function carregarFiltroUI() {
+  const f = getFiltros();
+  document.getElementById('filtro-ativo').checked = f.ativo;
+  document.getElementById('filtro-modo').value = f.modo;
+  document.getElementById('filtro-especie-ativo').checked = f.especie.ativo;
+  document.getElementById('filtro-especie-modo').value = f.especie.modo;
+  document.getElementById('filtro-partes-ativo').checked = f.partes.ativo;
+  document.getElementById('filtro-partes-modo').value = f.partes.modo;
+  document.getElementById('filtro-assunto-ativo').checked = f.assunto.ativo;
+  document.getElementById('filtro-assunto-modo').value = f.assunto.modo;
+  renderFiltroTags('especie', f.especie.termos);
+  renderFiltroTags('partes', f.partes.termos);
+  renderFiltroTags('assunto', f.assunto.termos);
+  atualizarFiltroUI(f);
+}
+
+function atualizarFiltroUI(f) {
+  const cats = document.getElementById('filtro-categorias');
+  const badge = document.getElementById('filtro-status-badge');
+  const label = document.getElementById('filtro-toggle-label');
+  const modoRow = document.getElementById('filtro-modo-row');
+  if (f.ativo) {
+    cats.style.display = '';
+    modoRow.style.display = '';
+    label.textContent = 'Ativado';
+    label.style.color = 'var(--ok)';
+    badge.textContent = '● Filtro ativo';
+    badge.className = 'tag tag-ok';
+  } else {
+    cats.style.display = 'none';
+    modoRow.style.display = 'none';
+    label.textContent = 'Desativado';
+    label.style.color = 'var(--text3)';
+    badge.textContent = '○ Filtro inativo';
+    badge.className = 'tag tag-gray';
+  }
+}
+
+function toggleFiltro() { salvarFiltros(); }
+
+function addFiltroTag(cat) {
+  const input = document.getElementById(`filtro-${cat}-input`);
+  const termo = input.value.trim().toLowerCase();
+  if (!termo) return;
+  const existing = getFiltroTermos(cat);
+  if (existing.includes(termo)) { input.value = ''; return; }
+  renderFiltroTags(cat, [...existing, termo]);
+  input.value = '';
+  salvarFiltros();
+}
+
+function removeFiltroTag(cat, termo) {
+  const existing = getFiltroTermos(cat).filter(t => t !== termo);
+  renderFiltroTags(cat, existing);
+  salvarFiltros();
+}
+
+function renderFiltroTags(cat, termos) {
+  const container = document.getElementById(`filtro-${cat}-tags`);
+  container.innerHTML = termos.map(t =>
+    `<span class="filtro-tag ${cat}" data-termo="${t}">
+      ${t}
+      <button onclick="removeFiltroTag('${cat}','${t}')" title="Remover">×</button>
+    </span>`
+  ).join('');
+}
+
+function limparFiltros() {
+  if (!confirm('Limpar todos os termos de filtro?')) return;
+  renderFiltroTags('especie', []);
+  renderFiltroTags('partes', []);
+  renderFiltroTags('assunto', []);
+  document.getElementById('filtro-ativo').checked = false;
+  salvarFiltros();
+}
+
+function testarFiltro(nome) {
+  const el = document.getElementById('filtro-teste-resultado');
+  if (!nome) { el.style.display = 'none'; return; }
+  el.style.display = '';
+  const passa = pdfPassaFiltro(nome);
+  const f = getFiltros();
+
+  // Detalhe por categoria
+  let detalhes = [];
+  ['especie', 'partes', 'assunto'].forEach(cat => {
+    const catCfg = f[cat];
+    if (!catCfg.ativo || catCfg.termos.length === 0) { detalhes.push(`<span style="color:var(--text3)">${cat}: ignorado</span>`); return; }
+    const n = nome.toLowerCase();
+    const matches = catCfg.termos.filter(t => n.includes(t));
+    const catPassa = catCfg.modo === 'OR' ? matches.length > 0 : matches.length === catCfg.termos.length;
+    const matched = catCfg.termos.map(t =>
+      `<code style="background:${n.includes(t)?'var(--ok-light)':'var(--danger-light)'};padding:1px 4px;border-radius:3px;color:${n.includes(t)?'var(--ok)':'var(--danger)'}">${t}</code>`
+    ).join(' ');
+    detalhes.push(`<b>${cat}:</b> ${matched} → <b style="color:${catPassa?'var(--ok)':'var(--danger)'}">${catPassa?'✓ passa':'✗ bloqueado'}</b>`);
+  });
+
+  el.innerHTML = `
+    <div style="padding:8px 10px;border-radius:6px;border:1px solid ${passa?'var(--ok)':'var(--danger)'};background:${passa?'var(--ok-light)':'var(--danger-light)'}">
+      <div style="font-weight:600;color:${passa?'var(--ok)':'var(--danger)'};margin-bottom:6px">${passa?'✓ PDF APROVADO — seria enviado à API':'✗ PDF BLOQUEADO — não consumiria tokens'}</div>
+      <div style="display:flex;flex-direction:column;gap:3px;font-size:11px">${detalhes.join('')}</div>
+    </div>`;
+
+  // typo corrigido acima — noop
+}
+
+/**
+ * Função central de filtro — usada em gerarMinuta e no repositório.
+ * Retorna true se o PDF deve ser enviado à API.
+ */
+function pdfPassaFiltro(nomeArquivo) {
+  const f = getFiltros();
+  if (!f.ativo) return true; // filtro desativado → passa tudo
+
+  const nome = nomeArquivo.toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, ''); // remove acentos para comparação
+
+  const cats = ['especie', 'partes', 'assunto'];
+  const ativasCats = cats.filter(cat => f[cat].ativo && f[cat].termos.length > 0);
+  if (ativasCats.length === 0) return true; // sem categorias ativas → passa tudo
+
+  const resultados = ativasCats.map(cat => {
+    const catCfg = f[cat];
+    const termos = catCfg.termos.map(t => t.normalize('NFD').replace(/[\u0300-\u036f]/g, ''));
+    if (catCfg.modo === 'OR') return termos.some(t => nome.includes(t));
+    return termos.every(t => nome.includes(t));
+  });
+
+  if (f.modo === 'AND') return resultados.every(Boolean);
+  return resultados.some(Boolean);
+}
+
+/**
+ * Filtra uma lista de File/FileHandle objects pelo nome, retornando apenas os aprovados.
+ * Também retorna estatísticas para exibição.
+ */
+function aplicarFiltroEmLista(lista, getNome) {
+  const f = getFiltros();
+  if (!f.ativo) return { aprovados: lista, bloqueados: [], filtroAtivo: false };
+  const aprovados = lista.filter(item => pdfPassaFiltro(getNome(item)));
+  const bloqueados = lista.filter(item => !pdfPassaFiltro(getNome(item)));
+  return { aprovados, bloqueados, filtroAtivo: true };
+}
+
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// CURADORIA JURÍDICA — separação por responsabilidade:
+//   [A] CATÁLOGO   — dados dos blocos decisórios (embutido, separável em .json)
+//   [B] LÓGICA     — identificação de controvérsias e seleção de blocos
+//   [C] MONTAGEM   — composição da minuta a partir dos blocos selecionados
+//   [D] INTERFACE  — funções que tocam o DOM
+// Para separar em arquivos externos: mova cada seção para seu .js/.json e
+// carregue via <script src="..."> ou fetch().
+// ═══════════════════════════════════════════════════════════════════════════════
+
+// ── [A] CATÁLOGO ──────────────────────────────────────────────────────────────
+// Fonte: catalogo_blocos_cumprimento_sentenca_v1.json (embutido abaixo)
+const CATALOGO_BLOCOS = {
+  "_meta": {
+    "versao": "1.0",
+    "descricao": "Catálogo de blocos decisórios — Cumprimento de Sentença contra a Fazenda Pública Federal",
+    "instrucao": "Os textos dos blocos devem ser preservados integralmente na montagem da minuta. Não reescrever fundamentos nem precedentes."
+  },
+  "controversias": [
+    {
+      "codigo": "CS001",
+      "nome": "execucao_individual_acao_coletiva",
+      "label": "Execução individual de ação coletiva",
+      "palavras_chave": [
+        "acao coletiva",
+        "titulo coletivo",
+        "execucao individual",
+        "beneficiario",
+        "class action",
+        "sindicato",
+        "associacao",
+        "substituicao processual"
+      ],
+      "fase": [
+        "Apresentação de cálculos",
+        "Homologação de cálculos"
+      ],
+      "blocos": [
+        {
+          "id": "CS001-B01",
+          "titulo": "Legitimidade do exequente em ação coletiva",
+          "tipo": "fundamento",
+          "texto": "Tratando-se de execução individual de título judicial formado em ação coletiva, o exequente deve demonstrar sua condição de beneficiário da sentença coletiva, nos termos do art. 98 do CDC c/c art. 513, §1º, do CPC.",
+          "precedentes": [
+            "STJ — Tema 1029",
+            "STJ — REsp 1.275.215/RS"
+          ],
+          "tags": [
+            "legitimidade",
+            "titulo coletivo"
+          ]
+        },
+        {
+          "id": "CS001-B02",
+          "titulo": "Competência para execução individual",
+          "tipo": "fundamento",
+          "texto": "A execução individual de sentença coletiva pode ser proposta no foro do domicílio do exequente, conforme art. 101, I, do CDC, independentemente do juízo que prolatou a sentença condenatória genérica.",
+          "precedentes": [
+            "STJ — Súmula 470",
+            "STJ — REsp 1.391.198/RS"
+          ],
+          "tags": [
+            "competencia",
+            "foro domicilio"
+          ]
+        }
+      ]
+    },
+    {
+      "codigo": "CS002",
+      "nome": "excesso_execucao",
+      "label": "Excesso de execução",
+      "palavras_chave": [
+        "excesso",
+        "impugnacao",
+        "planilha",
+        "calculo",
+        "indice",
+        "correcao monetaria",
+        "juros",
+        "ipca",
+        "inpc",
+        "tr",
+        "selic",
+        "poupanca"
+      ],
+      "fase": [
+        "Impugnação ao cumprimento",
+        "Homologação de cálculos",
+        "Manifestação sobre impugnação"
+      ],
+      "blocos": [
+        {
+          "id": "CS002-B01",
+          "titulo": "Ônus da impugnação por excesso — art. 525 §2º CPC",
+          "tipo": "fundamento",
+          "texto": "A impugnação por excesso de execução deve estar acompanhada de demonstrativo discriminado e atualizado do débito, sob pena de rejeição liminar, nos termos do art. 525, §2º, do CPC. O encargo de apontar o excesso e quantificá-lo é do executado.",
+          "precedentes": [
+            "STJ — AgInt no AREsp 1.544.840/SP",
+            "STJ — REsp 1.813.444/SP"
+          ],
+          "tags": [
+            "excesso",
+            "onus executado",
+            "planilha"
+          ]
+        },
+        {
+          "id": "CS002-B02",
+          "titulo": "Correção monetária — Tema 905/STJ",
+          "tipo": "fundamento",
+          "texto": "Quanto à correção monetária e juros de mora nas condenações da Fazenda Pública, aplica-se o IPCA-E na fase pré-judicial e, a partir do início da mora processual (citação), o índice oficial de remuneração da caderneta de poupança e juros de mora de 0,5% ao mês (art. 1º-F da Lei 9.494/97, com redação dada pela Lei 11.960/09), consoante decidido pelo STF no RE 870.947/SE (Tema 810) e pelo STJ no Tema 905.",
+          "precedentes": [
+            "STF — RE 870.947/SE — Tema 810",
+            "STJ — REsp 1.492.221/PR — Tema 905"
+          ],
+          "tags": [
+            "ipca-e",
+            "poupanca",
+            "lei 11960",
+            "correcao monetaria",
+            "juros mora"
+          ]
+        },
+        {
+          "id": "CS002-B03",
+          "titulo": "Prescrição intercorrente no cumprimento",
+          "tipo": "fundamento",
+          "texto": "O prazo prescricional no cumprimento de sentença contra a Fazenda Pública é de 5 (cinco) anos, contado do trânsito em julgado, nos termos da Súmula 150/STF. A prescrição intercorrente, por sua vez, conta-se a partir da intimação do exequente para adotar providências, conforme art. 921, §1º, do CPC.",
+          "precedentes": [
+            "STF — Súmula 150",
+            "STJ — REsp 1.658.069/SP"
+          ],
+          "tags": [
+            "prescricao",
+            "intercorrente",
+            "5 anos",
+            "transito em julgado"
+          ]
+        }
+      ]
+    },
+    {
+      "codigo": "CS003",
+      "nome": "fusex",
+      "label": "FUSEX / SAMMED — Saúde Militar",
+      "palavras_chave": [
+        "fusex",
+        "sammed",
+        "saude militar",
+        "exercito",
+        "marinha",
+        "aeronautica",
+        "forca armada",
+        "beneficio saude",
+        "reembolso",
+        "cobertura"
+      ],
+      "fase": [
+        "Apresentação de cálculos",
+        "Homologação de cálculos",
+        "Expedição de Requisitório"
+      ],
+      "blocos": [
+        {
+          "id": "CS003-B01",
+          "titulo": "Natureza do crédito FUSEX — RPV ou Precatório",
+          "tipo": "fundamento",
+          "texto": "Os créditos decorrentes de reembolso de despesas médico-hospitalares pelo FUSEX/SAMMED têm natureza alimentar quando destinados ao custeio de tratamento de saúde. Para fins de expedição de requisitório, observa-se o teto de 60 (sessenta) salários mínimos para RPV na Justiça Federal (art. 17, §1º, da Lei 10.259/01), devendo o exequente renunciar ao excedente ou aguardar a tramitação do precatório.",
+          "precedentes": [
+            "STJ — REsp 1.101.740/PR",
+            "TRF1 — AC 0003214-12.2012.4.01.3800"
+          ],
+          "tags": [
+            "fusex",
+            "natureza alimentar",
+            "rpv",
+            "precatorio",
+            "teto"
+          ]
+        },
+        {
+          "id": "CS003-B02",
+          "titulo": "Competência — FUSEX e Justiça Federal",
+          "tipo": "fundamento",
+          "texto": "Compete à Justiça Federal processar e julgar demandas referentes ao FUSEX/SAMMED, por se tratar de fundo administrado pela União (Exército Brasileiro/Marinha/Aeronáutica), nos termos do art. 109, I, da Constituição Federal.",
+          "precedentes": [
+            "STJ — CC 108.442/DF",
+            "TRF1 — AG 0004521-33.2014.4.01.0000"
+          ],
+          "tags": [
+            "competencia",
+            "justica federal",
+            "uniao",
+            "fusex"
+          ]
+        }
+      ]
+    },
+    {
+      "codigo": "CS004",
+      "nome": "expedicao_requisitorio",
+      "label": "Expedição de Requisitório (RPV / Precatório)",
+      "palavras_chave": [
+        "rpv",
+        "precatorio",
+        "requisitorio",
+        "expedicao",
+        "renúncia",
+        "renúncia ao excedente",
+        "60 salarios",
+        "art 100",
+        "art 17"
+      ],
+      "fase": [
+        "Expedição de Requisitório"
+      ],
+      "blocos": [
+        {
+          "id": "CS004-B01",
+          "titulo": "Expedição de RPV — teto e renúncia",
+          "tipo": "dispositivo",
+          "texto": "Homologados os cálculos no valor de R$ [VALOR TOTAL], verifico que o montante [não ultrapassa / ultrapassa] o limite de 60 (sessenta) salários mínimos estabelecido pelo art. 17, §1º, da Lei 10.259/01.\n\nIntime-se o exequente para, no prazo de 15 (quinze) dias: (i) confirmar o interesse na expedição de RPV, com renúncia expressa ao valor excedente ao teto, nos termos do §4º do mesmo artigo; ou (ii) optar pela tramitação via precatório pelo valor integral.",
+          "precedentes": [
+            "Lei 10.259/01 — art. 17",
+            "CF/88 — art. 100 §3º"
+          ],
+          "tags": [
+            "rpv",
+            "renúncia",
+            "teto",
+            "60 salarios minimos",
+            "intima exequente"
+          ]
+        },
+        {
+          "id": "CS004-B02",
+          "titulo": "Expedição de Precatório",
+          "tipo": "dispositivo",
+          "texto": "Expeça-se Ofício Requisitório (Precatório) ao Egrégio Tribunal Regional Federal, nos termos do art. 100 da Constituição Federal, pelo valor de R$ [VALOR], correspondente ao débito atualizado até [DATA].\n\nApós a expedição, arquivem-se os autos com ressalva de reabertura para acompanhamento do pagamento.",
+          "precedentes": [
+            "CF/88 — art. 100",
+            "CPC — art. 535 §3º"
+          ],
+          "tags": [
+            "precatorio",
+            "trf",
+            "arquivamento",
+            "ressalva"
+          ]
+        }
+      ]
+    },
+    {
+      "codigo": "CS005",
+      "nome": "extincao_pagamento",
+      "label": "Sentença de extinção pelo pagamento",
+      "palavras_chave": [
+        "pagamento",
+        "comprovante",
+        "extinção",
+        "art 924",
+        "quitacao",
+        "deposito",
+        "levantamento",
+        "satisfacao"
+      ],
+      "fase": [
+        "Sentença de extinção pelo pagamento"
+      ],
+      "blocos": [
+        {
+          "id": "CS005-B01",
+          "titulo": "Extinção pelo pagamento — art. 924 II CPC",
+          "tipo": "dispositivo",
+          "texto": "Comprovado o pagamento integral do débito exequendo, JULGO EXTINTO o cumprimento de sentença, com fundamento no art. 924, II, do CPC.\n\nHonorários advocatícios devidos na fase de cumprimento: [fixar ou dispensar conforme o caso, art. 85 §7º CPC].\n\nArquivem-se os autos.",
+          "precedentes": [
+            "CPC — art. 924 II",
+            "CPC — art. 85 §7º"
+          ],
+          "tags": [
+            "extincao",
+            "pagamento",
+            "art 924",
+            "arquivamento"
+          ]
+        }
+      ]
+    },
+    {
+      "codigo": "CS006",
+      "nome": "medidas_restritivas",
+      "label": "Medidas restritivas — art. 139 IV CPC",
+      "palavras_chave": [
+        "medidas restritivas",
+        "art 139",
+        "cnh",
+        "passaporte",
+        "cartao credito",
+        "suspensao",
+        "bloqueio",
+        "atipica",
+        "coercao",
+        "executado recalcitrante"
+      ],
+      "fase": [
+        "Decisão — Medidas restritivas"
+      ],
+      "blocos": [
+        {
+          "id": "CS006-B01",
+          "titulo": "Requisitos para medidas atípicas — Fazenda Pública",
+          "tipo": "fundamento",
+          "texto": "A adoção de medidas executivas atípicas previstas no art. 139, IV, do CPC pressupõe: (i) exaurimento ou ineficácia das medidas típicas; (ii) proporcionalidade e adequação da medida ao caso concreto; (iii) fundamentação específica. Em se tratando de Fazenda Pública, a aplicação é ainda mais restrita, dada a impenhorabilidade dos bens públicos e o regime constitucional dos precatórios (art. 100 da CF).",
+          "precedentes": [
+            "STJ — REsp 1.854.289/SP",
+            "STJ — HC 478.963/SP",
+            "STF — ADPF 664"
+          ],
+          "tags": [
+            "art 139",
+            "medidas atipicas",
+            "proporcionalidade",
+            "fazenda publica",
+            "precatorio"
+          ]
+        }
+      ]
+    },
+    {
+      "codigo": "CS007",
+      "nome": "remessa_contadoria",
+      "label": "Remessa à Contadoria Judicial",
+      "palavras_chave": [
+        "contadoria",
+        "perito",
+        "conta",
+        "divergencia",
+        "calculo",
+        "apuracao",
+        "oficial",
+        "contador"
+      ],
+      "fase": [
+        "Remeter à contadoria",
+        "Homologação de cálculos"
+      ],
+      "blocos": [
+        {
+          "id": "CS007-B01",
+          "titulo": "Remessa à contadoria — divergência de cálculos",
+          "tipo": "dispositivo",
+          "texto": "Havendo divergência entre os valores apresentados pelo exequente e pela executada, sem que qualquer das partes tenha logrado demonstrar de forma inequívoca o valor correto do débito, determino a remessa dos autos à Contadoria Judicial para elaboração de conta de liquidação, observando os parâmetros do título judicial e a jurisprudência consolidada do STJ (Tema 905).\n\nApós, voltem conclusos.",
+          "precedentes": [
+            "CPC — art. 524 §2º",
+            "STJ — Tema 905"
+          ],
+          "tags": [
+            "contadoria",
+            "divergencia",
+            "liquidacao",
+            "conta oficial"
+          ]
+        }
+      ]
+    }
+  ]
+};
+
+// ── [B] LÓGICA — identificação de controvérsias ───────────────────────────────
+
+/** Normaliza texto para comparação: minúsculas, sem acento, sem pontuação */
+function curNormalizar(txt) {
+  return (txt || '').toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9\s]/g, ' ');
+}
+
+/**
+ * Recebe o texto do relatório e retorna array de códigos de controvérsias detectadas,
+ * ordenados por número de palavras-chave encontradas (descendente).
+ */
+function curDetectarControversias(relatorio) {
+  const norm = curNormalizar(relatorio);
+  const resultados = [];
+  for (const contr of CATALOGO_BLOCOS.controversias) {
+    const hits = contr.palavras_chave.filter(pk => norm.includes(curNormalizar(pk)));
+    if (hits.length > 0) {
+      resultados.push({ ...contr, hits, score: hits.length });
+    }
+  }
+  resultados.sort((a, b) => b.score - a.score);
+  return resultados;
+}
+
+/** Detecta fase processual pelo texto do relatório */
+function curDetectarFase(relatorio) {
+  const norm = curNormalizar(relatorio);
+  const FASES_MAP = [
+    { fase: 'Expedição de Requisitório',         chaves: ['expedicao','requisitorio','rpv','precatorio','60 salarios'] },
+    { fase: 'Sentença de extinção pelo pagamento',chaves: ['extincao','pagamento','art 924','quitacao'] },
+    { fase: 'Decisão — Medidas restritivas',      chaves: ['medidas restritivas','art 139','cnh','passaporte'] },
+    { fase: 'Remeter à contadoria',               chaves: ['contadoria','conta judicial','divergencia calculo'] },
+    { fase: 'Homologação de cálculos',            chaves: ['homolog','calculo','liquidacao'] },
+    { fase: 'Impugnação ao cumprimento',          chaves: ['impugnacao','excesso','executada impugna'] },
+    { fase: 'Manifestação sobre impugnação',      chaves: ['manifestacao','exequente manifesta','replica'] },
+    { fase: 'Apresentação de cálculos',           chaves: ['apresentacao','memoria de calculo','exequente apresentou'] },
+  ];
+  for (const fm of FASES_MAP) {
+    if (fm.chaves.some(ch => norm.includes(curNormalizar(ch)))) return fm.fase;
+  }
+  return 'Não identificada';
+}
+
+/** Detecta réu pelo texto */
+function curDetectarReu(relatorio) {
+  const norm = curNormalizar(relatorio);
+  if (norm.includes('inss') || norm.includes('previdencia')) return 'INSS';
+  if (norm.includes('fusex') || norm.includes('sammed')) return 'União Federal (FUSEX)';
+  if (norm.includes('funasa')) return 'FUNASA';
+  if (norm.includes('ufmg') || norm.includes('universidade')) return 'UFMG';
+  if (norm.includes('uniao')) return 'União Federal';
+  return 'Ente federal (não identificado)';
+}
+
+/**
+ * Dado um array de controvérsias detectadas, retorna todos os blocos relevantes
+ * filtrados também pela fase detectada, sem duplicatas.
+ */
+function curSelecionarBlocos(controversiasDetectadas, faseDetectada) {
+  const vistos = new Set();
+  const blocos = [];
+  for (const contr of controversiasDetectadas) {
+    for (const bloco of (contr.blocos || [])) {
+      if (!vistos.has(bloco.id)) {
+        vistos.add(bloco.id);
+        blocos.push({ ...bloco, _controversia: contr.label });
+      }
+    }
+  }
+  // Priorizar blocos cuja controvérsia prevê a fase detectada
+  blocos.sort((a, b) => {
+    const conA = controversiasDetectadas.find(c => c.blocos?.some(bl => bl.id === a.id));
+    const conB = controversiasDetectadas.find(c => c.blocos?.some(bl => bl.id === b.id));
+    const aFase = (conA?.fase || []).includes(faseDetectada) ? 0 : 1;
+    const bFase = (conB?.fase || []).includes(faseDetectada) ? 0 : 1;
+    return aFase - bFase;
+  });
+  return blocos;
+}
+
+// ── [C] MONTAGEM DA MINUTA ────────────────────────────────────────────────────
+
+/**
+ * Monta a minuta a partir dos blocos selecionados.
+ * Preserva integralmente o texto dos blocos; não reescreve precedentes.
+ * @param {string[]} blocoIds  — IDs dos blocos a incluir (na ordem da UI)
+ * @param {object}   contexto  — { fase, reu, relatorio }
+ * @returns {string} texto da minuta
+ */
+function curMontarTextoMinuta(blocoIds, contexto) {
+  const allBlocos = CATALOGO_BLOCOS.controversias.flatMap(c => c.blocos || []);
+  const selecionados = blocoIds
+    .map(id => allBlocos.find(b => b.id === id))
+    .filter(Boolean);
+
+  const fundamentos = selecionados.filter(b => b.tipo === 'fundamento');
+  const dispositivos = selecionados.filter(b => b.tipo === 'dispositivo');
+
+  const linhas = [];
+  linhas.push('DECISÃO\n');
+  linhas.push(`Processo: [NÚMERO DO PROCESSO]`);
+  linhas.push(`Réu/Executado: ${contexto.reu}`);
+  linhas.push(`Fase: ${contexto.fase}`);
+  linhas.push('');
+
+  if (fundamentos.length > 0) {
+    linhas.push('RELATÓRIO E FUNDAMENTAÇÃO\n');
+    fundamentos.forEach((b, i) => {
+      linhas.push(`${i + 1}. ${b.titulo.toUpperCase()}`);
+      linhas.push('');
+      linhas.push(b.texto);
+      if (b.precedentes?.length) {
+        linhas.push('');
+        linhas.push('Precedentes: ' + b.precedentes.join(' | '));
+      }
+      linhas.push('');
+    });
+  }
+
+  if (dispositivos.length > 0) {
+    linhas.push('DISPOSITIVO\n');
+    dispositivos.forEach(b => {
+      linhas.push(b.texto);
+      linhas.push('');
+    });
+  }
+
+  if (fundamentos.length === 0 && dispositivos.length === 0) {
+    linhas.push('[Nenhum bloco selecionado — marque ao menos um bloco acima]');
+  }
+
+  linhas.push('Intime-se.');
+  linhas.push('');
+  linhas.push('[Local], [DATA].');
+  linhas.push('[NOME DO MAGISTRADO]');
+  linhas.push('Juiz(a) Federal');
+
+  return linhas.join('\n');
+}
+
+// ── [D] INTERFACE ─────────────────────────────────────────────────────────────
+
+let _curControversiasSelecionadas = []; // array de objetos de controvérsia ativos
+let _curBlocosSugeridos = [];           // array de blocos renderizados
+let _curFase = '';
+let _curReu = '';
+
+function curAnalisarRelatorio() {
+  const relatorio = document.getElementById('cur-relatorio').value.trim();
+  if (!relatorio) { alert('Cole o relatório do NotebookLM antes de analisar.'); return; }
+
+  _curFase = curDetectarFase(relatorio);
+  _curReu  = curDetectarReu(relatorio);
+  const controversias = curDetectarControversias(relatorio);
+  _curControversiasSelecionadas = [...controversias];
+  _curBlocosSugeridos = curSelecionarBlocos(controversias, _curFase);
+
+  document.getElementById('cur-fase-detectada').textContent = _curFase;
+  document.getElementById('cur-reu-detectado').textContent = _curReu;
+  document.getElementById('cur-controversias-count').textContent = controversias.length + ' detectada(s)';
+  document.getElementById('cur-blocos-count').textContent = _curBlocosSugeridos.length + ' bloco(s)';
+
+  // Estimar tokens economizados
+  const totalBlocos = CATALOGO_BLOCOS.controversias.flatMap(c => c.blocos||[]).length;
+  const pct = totalBlocos > 0 ? Math.round((1 - _curBlocosSugeridos.length / totalBlocos) * 100) : 0;
+  document.getElementById('cur-tokens-info').textContent =
+    `~${pct}% dos blocos filtrados — economia estimada de tokens`;
+
+  curRenderControversias();
+  curRenderBlocos();
+  curPopularSelectAdicionar();
+
+  document.getElementById('cur-step2').style.display = '';
+  document.getElementById('cur-minuta-wrap').style.display = 'none';
+
+  // Busca automática no repositório (abordagem A — zero tokens)
+  curBuscarNoRepositorio();
+}
+
+function curRenderControversias() {
+  const lista = document.getElementById('cur-lista-controversias');
+  if (_curControversiasSelecionadas.length === 0) {
+    lista.innerHTML = '<div style="font-size:12px;color:var(--text3);padding:8px">Nenhuma controvérsia detectada automaticamente.</div>';
+    return;
+  }
+  lista.innerHTML = _curControversiasSelecionadas.map(c => `
+    <div class="cur-controversia ativa" id="ccontr-${c.codigo}">
+      <div class="cur-controversia-label">${c.label}</div>
+      <span class="cur-controversia-badge">${c.score || c.hits?.length || 0} match</span>
+      <button style="background:none;border:none;cursor:pointer;color:var(--danger);font-size:14px;line-height:1;padding:0" title="Remover" onclick="curRemoverControversia('${c.codigo}')">×</button>
+    </div>
+  `).join('');
+}
+
+function curRenderBlocos() {
+  const lista = document.getElementById('cur-lista-blocos');
+  if (_curBlocosSugeridos.length === 0) {
+    lista.innerHTML = '<div style="font-size:12px;color:var(--text3);padding:16px;text-align:center">Nenhum bloco encontrado para as controvérsias selecionadas.</div>';
+    return;
+  }
+  lista.innerHTML = _curBlocosSugeridos.map(b => `
+    <div class="bloco-card selecionado" id="bloco-card-${b.id}" onclick="curToggleBloco('${b.id}', this)">
+      <div class="bloco-header">
+        <input type="checkbox" class="bloco-check" id="bloco-chk-${b.id}" checked onclick="event.stopPropagation();curToggleBloco('${b.id}',document.getElementById('bloco-card-${b.id}'))">
+        <div class="bloco-titulo">${b.titulo}</div>
+        <span class="bloco-tipo ${b.tipo}">${b.tipo}</span>
+      </div>
+      <div class="bloco-preview">${b.texto.substring(0, 160)}${b.texto.length > 160 ? '…' : ''}</div>
+      ${b.precedentes?.length ? `<div class="bloco-prec">${b.precedentes.map(p=>`<span>${p}</span>`).join('')}</div>` : ''}
+      <div style="font-size:10px;color:var(--text3);margin-top:4px;margin-left:22px">
+        Controvérsia: ${b._controversia} · ID: ${b.id}
+      </div>
+    </div>
+  `).join('');
+}
+
+function curToggleBloco(id, cardEl) {
+  const chk = document.getElementById('bloco-chk-' + id);
+  chk.checked = !chk.checked;
+  cardEl.classList.toggle('selecionado', chk.checked);
+}
+
+function curSelecionarTodos() {
+  _curBlocosSugeridos.forEach(b => {
+    const chk = document.getElementById('bloco-chk-' + b.id);
+    const card = document.getElementById('bloco-card-' + b.id);
+    if (chk) { chk.checked = true; card.classList.add('selecionado'); }
+  });
+}
+
+function curPopularSelectAdicionar() {
+  const sel = document.getElementById('cur-add-controversia');
+  const existentes = _curControversiasSelecionadas.map(c => c.codigo);
+  sel.innerHTML = '<option value="">— selecionar —</option>' +
+    CATALOGO_BLOCOS.controversias
+      .filter(c => !existentes.includes(c.codigo))
+      .map(c => `<option value="${c.codigo}">${c.label}</option>`)
+      .join('');
+}
+
+function curAdicionarControversia() {
+  const sel = document.getElementById('cur-add-controversia');
+  const codigo = sel.value;
+  if (!codigo) return;
+  const contr = CATALOGO_BLOCOS.controversias.find(c => c.codigo === codigo);
+  if (!contr) return;
+  _curControversiasSelecionadas.push({ ...contr, score: 0, hits: [] });
+  // Adicionar blocos novos
+  const allIds = _curBlocosSugeridos.map(b => b.id);
+  for (const bloco of (contr.blocos || [])) {
+    if (!allIds.includes(bloco.id)) {
+      _curBlocosSugeridos.push({ ...bloco, _controversia: contr.label });
+    }
+  }
+  curRenderControversias();
+  curRenderBlocos();
+  curPopularSelectAdicionar();
+  document.getElementById('cur-controversias-count').textContent = _curControversiasSelecionadas.length + ' detectada(s)';
+  document.getElementById('cur-blocos-count').textContent = _curBlocosSugeridos.length + ' bloco(s)';
+}
+
+function curRemoverControversia(codigo) {
+  _curControversiasSelecionadas = _curControversiasSelecionadas.filter(c => c.codigo !== codigo);
+  const contr = CATALOGO_BLOCOS.controversias.find(c => c.codigo === codigo);
+  const idsRemover = (contr?.blocos || []).map(b => b.id);
+  _curBlocosSugeridos = _curBlocosSugeridos.filter(b => !idsRemover.includes(b.id));
+  curRenderControversias();
+  curRenderBlocos();
+  curPopularSelectAdicionar();
+  document.getElementById('cur-controversias-count').textContent = _curControversiasSelecionadas.length + ' detectada(s)';
+  document.getElementById('cur-blocos-count').textContent = _curBlocosSugeridos.length + ' bloco(s)';
+}
+
+
+// ── [D] REPOSITÓRIO × CURADORIA ──────────────────────────────────────────────
+
+function curBuscarNoRepositorio() {
+  const palavras = _curControversiasSelecionadas.flatMap(c => c.palavras_chave || []);
+  const resultados = repoBuscarMinutasPorMetadados(_curFase, _curReu, palavras);
+
+  const wrap = document.getElementById('cur-repo-wrap');
+  const lista = document.getElementById('cur-repo-lista');
+  const count = document.getElementById('cur-repo-count');
+  const semHandle = document.getElementById('cur-repo-sem-handle');
+
+  if (resultados.length === 0) {
+    wrap.style.display = 'none';
+    return;
+  }
+
+  wrap.style.display = '';
+  count.textContent = `${resultados.length} encontrada(s)`;
+  const algumSemHandle = resultados.some(r => !r.handle);
+  semHandle.style.display = algumSemHandle ? '' : 'none';
+
+  lista.innerHTML = resultados.map((r, i) => `
+    <div style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface)">
+      <input type="checkbox" id="repo-ref-chk-${i}" style="width:auto;accent-color:var(--accent);margin-top:3px;flex-shrink:0" ${r.score >= 4 ? 'checked' : ''}>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:12px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${r.name}">${r.name}</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:2px">
+          ${r.meta.tipo||''} · ${r.meta.fase||''} · ${r.meta.reu||''}
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:4px">
+          ${(r.meta.pontos||[]).map(p => `<span style="font-size:10px;background:var(--surface2);border:1px solid var(--border);padding:1px 6px;border-radius:8px;color:var(--text3)">${p}</span>`).join('')}
+        </div>
+      </div>
+      <div style="text-align:right;flex-shrink:0">
+        <div style="font-size:13px;font-weight:700;color:var(--ok)">${r.score}pts</div>
+        <div style="font-size:10px;color:var(--text3)">${r.motivos.slice(0,2).join(', ')}</div>
+        ${r.handle
+          ? `<button class="btn btn-sm" style="margin-top:4px;font-size:10px" onclick="curPreviewMinuta(${i})">👁 Ver</button>`
+          : `<span style="font-size:10px;color:var(--warn)">sem handle</span>`}
+      </div>
+    </div>
+  `).join('');
+
+  // Guarda resultados para uso na montagem
+  window._curRepoResultados = resultados;
+}
+
+async function curPreviewMinuta(idx) {
+  const r = window._curRepoResultados?.[idx];
+  if (!r?.handle) { alert('Arquivo não disponível — reconecte a pasta no Repositório PDF.'); return; }
+  try {
+    const file = await r.handle.getFile();
+    // Apenas exibir nome e metadados; leitura completa só na montagem se solicitado
+    alert(`Arquivo: ${r.name}\nFase: ${r.meta.fase}\nRéu: ${r.meta.reu}\nPontos: ${(r.meta.pontos||[]).join(', ')}\nRelevância: ${r.score} pts\n\nPara incluir na minuta, deixe a caixa marcada e clique em "Montar minuta".`);
+  } catch(e) {
+    alert('Erro ao acessar o arquivo: ' + e.message);
+  }
+}
+
+async function curMontarMinuta() {
+  const blocoIds = _curBlocosSugeridos
+    .filter(b => document.getElementById('bloco-chk-' + b.id)?.checked)
+    .map(b => b.id);
+
+  if (blocoIds.length === 0) { alert('Marque ao menos um bloco para montar a minuta.'); return; }
+
+  const usarIA = document.getElementById('cur-usar-ia').checked;
+  // Minutas do repositório marcadas como referência
+  const repoRefs = (window._curRepoResultados || [])
+    .filter((r, i) => document.getElementById('repo-ref-chk-' + i)?.checked);
+
+  const contexto = { fase: _curFase, reu: _curReu, relatorio: document.getElementById('cur-relatorio').value };
+
+  let minuta = curMontarTextoMinuta(blocoIds, contexto);
+
+  if (usarIA) {
+    const apiKey = getProvider() === 'anthropic' ? getApiKey() : getOaiKey();
+    if (!apiKey) { alert('Configure a chave de API em Configurações para usar complementação por IA.'); }
+    else {
+      setLoading('Complementando lacunas com IA (sem reescrever fundamentos)...');
+      try {
+        // Incluir metadados das minutas de referência no prompt (sem ler PDF — só metadados)
+  const repoRefTexto = repoRefs.length > 0
+    ? '\n\nMINUTAS DE REFERÊNCIA DO REPOSITÓRIO (metadados — não reproduza, use como orientação de linguagem e estrutura):\n' +
+      repoRefs.map(r => `- ${r.name}: ${r.meta.tipo}, ${r.meta.fase}, ${r.meta.reu}, pontos: ${(r.meta.pontos||[]).join(', ')}`).join('\n')
+    : '';
+
+  const prompt = `Você está montando uma decisão judicial de cumprimento de sentença contra a Fazenda Pública Federal.
+O texto abaixo foi gerado por blocos curados — NÃO reescreva nenhum fundamento, precedente ou texto dos blocos.
+Sua única tarefa é PREENCHER os campos marcados como [CAMPO A PREENCHER] ou [VALOR TOTAL] etc., usando as informações do relatório abaixo.
+Se não houver informação suficiente, mantenha o marcador original.
+
+RELATÓRIO DO CASO:
+${contexto.relatorio}
+
+MINUTA A COMPLETAR (NÃO ALTERE OS BLOCOS, APENAS PREENCHA OS CAMPOS []):
+${minuta}${repoRefTexto}`;
+
+        let textoIA = '';
+        if (getProvider() === 'anthropic') {
+          const resp = await fetch('https://api.anthropic.com/v1/messages', {
+            method: 'POST',
+            headers: { 'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true' },
+            body: JSON.stringify({ model: getModel(), max_tokens: 1500, messages: [{ role:'user', content: prompt }] })
+          });
+          const data = await resp.json();
+          if (data.error) throw new Error(data.error.message);
+          textoIA = data.content?.map(b => b.text||'').join('') || minuta;
+        } else {
+          const resp = await fetch('https://api.openai.com/v1/chat/completions', {
+            method: 'POST',
+            headers: { 'Content-Type':'application/json','Authorization':`Bearer ${apiKey}` },
+            body: JSON.stringify({ model: getModel(), max_tokens: 1500, messages: [{ role:'user', content: prompt }] })
+          });
+          const data = await resp.json();
+          if (data.error) throw new Error(data.error.message);
+          textoIA = data.choices?.[0]?.message?.content || minuta;
+        }
+        minuta = textoIA;
+      } catch(e) {
+        minuta += `\n\n[Erro na complementação IA: ${e.message}]`;
+      }
+      stopLoading();
+    }
+  }
+
+  document.getElementById('cur-minuta-output').value = minuta;
+  document.getElementById('cur-minuta-wrap').style.display = '';
+  const chars = minuta.length;
+  const tokEst = Math.round(chars / 4);
+  document.getElementById('cur-minuta-stats').textContent = `${blocoIds.length} bloco(s) · ~${tokEst} tokens estimados na saída`;
+  document.getElementById('cur-minuta-output').scrollIntoView({ behavior:'smooth', block:'start' });
+}
+
+function curExemploRelatorio() {
+  return `Processo: 0001234-12.2023.4.01.3800
+Réu: INSS
+Fase: Impugnação ao cumprimento
+
+O exequente apresentou cálculos no valor de R$ 45.320,00.
+O INSS apresentou impugnação ao cumprimento de sentença alegando excesso de execução, 
+sustentando que o índice de correção monetária utilizado (IPCA-E) diverge do título judicial,
+e que os juros de mora foram calculados fora dos parâmetros da Lei 11.960/09.
+Adicionalmente, suscitou prescrição intercorrente.
+O exequente manifestou-se sobre a impugnação, sustentando a correção dos cálculos.
+Valor: R$ 45.320,00 (abaixo de 60 salários mínimos — possível RPV).`;
+}
+
+// ─── REPOSITÓRIO PDF (File System Access API) ─────────────────────────────────
+let repoDirectoryHandle = null;   // FileSystemDirectoryHandle
+let repoKnownFiles = {};          // { name: { size, lastModified } }
+let repoAllFiles = [];            // [{ name, handle, size, lastModified, indexed }]
+let repoNovos = [];               // handles de arquivos novos
+let repoBatchResults = [];        // resultados da classificação IA
+let repoPollingTimer = null;
+
+async function conectarPasta() {
+  if (!('showDirectoryPicker' in window)) {
+    document.getElementById('repo-fsapi-warn').style.display = '';
+    return;
+  }
+  try {
+    const handle = await window.showDirectoryPicker({ mode: 'read' });
+    repoDirectoryHandle = handle;
+    repoKnownFiles = JSON.parse(cfg('gm_repo_known', '{}'));
+    await carregarPasta();
+    iniciarPolling();
+  } catch (e) {
+    if (e.name !== 'AbortError') alert('Erro ao acessar pasta: ' + e.message);
+  }
+}
+
+async function carregarPasta() {
+  if (!repoDirectoryHandle) return;
+  repoAllFiles = [];
+  for await (const [name, handle] of repoDirectoryHandle.entries()) {
+    if (handle.kind === 'file' && name.toLowerCase().endsWith('.pdf')) {
+      const file = await handle.getFile();
+      const indexed = !!repoKnownFiles[name];
+      repoAllFiles.push({ name, handle, size: file.size, lastModified: file.lastModified, indexed });
+    }
+  }
+  repoAllFiles.sort((a, b) => b.lastModified - a.lastModified);
+
+  // Atualiza UI
+  document.getElementById('repo-disconnected').style.display = 'none';
+  document.getElementById('repo-connected').style.display = '';
+  document.getElementById('repo-folder-name').textContent = repoDirectoryHandle.name;
+  document.getElementById('repo-total').textContent = repoAllFiles.length;
+  document.getElementById('repo-folder-meta').textContent =
+    `${repoAllFiles.length} PDF(s) · última leitura: ${new Date().toLocaleTimeString('pt-BR')}`;
+  renderRepoList('');
+  detectarNovos();
+}
+
+function detectarNovos() {
+  repoNovos = repoAllFiles.filter(f => !repoKnownFiles[f.name]);
+  const wrap = document.getElementById('repo-novos-wrap');
+  const badge = document.getElementById('badge-repo');
+  if (repoNovos.length > 0) {
+    document.getElementById('repo-novos-count').textContent = repoNovos.length;
+    wrap.style.display = '';
+    badge.style.display = '';
+    // Lista prévia dos novos
+    document.getElementById('repo-novos-list').innerHTML = repoNovos.map(f =>
+      `<div class="file-item">
+        <span class="file-icon">📄</span>
+        <div class="file-info">
+          <div class="file-name">${f.name}</div>
+          <div class="file-meta">${(f.size/1024).toFixed(0)} KB · ${new Date(f.lastModified).toLocaleDateString('pt-BR')}</div>
+        </div>
+        <span class="file-status" style="color:var(--warn);font-weight:500">Novo</span>
+      </div>`
+    ).join('');
+  } else {
+    wrap.style.display = 'none';
+    badge.style.display = 'none';
+  }
+}
+
+async function verificarNovos() {
+  const btn = document.getElementById('btn-verificar');
+  btn.disabled = true;
+  btn.textContent = 'Verificando...';
+  await carregarPasta();
+  btn.disabled = false;
+  btn.innerHTML = `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" style="width:13px;height:13px"><path d="M13.5 8A5.5 5.5 0 1 1 8 2.5"/><path d="M11 1v4h4"/></svg> Verificar novos`;
+  if (repoNovos.length === 0) {
+    alert('✓ Nenhum arquivo novo detectado.');
+  }
+}
+
+function iniciarPolling() {
+  if (repoPollingTimer) clearInterval(repoPollingTimer);
+  // Verifica a cada 60 segundos automaticamente
+  repoPollingTimer = setInterval(async () => {
+    if (repoDirectoryHandle && document.getElementById('panel-repositorio').classList.contains('active')) {
+      await carregarPasta();
+    }
+  }, 60000);
+}
+
+function desconectarPasta() {
+  if (!confirm('Desconectar a pasta? O índice de arquivos conhecidos será mantido.')) return;
+  repoDirectoryHandle = null;
+  repoAllFiles = [];
+  repoNovos = [];
+  if (repoPollingTimer) clearInterval(repoPollingTimer);
+  document.getElementById('repo-disconnected').style.display = '';
+  document.getElementById('repo-connected').style.display = 'none';
+  document.getElementById('badge-repo').style.display = 'none';
+  document.getElementById('repo-batch-wrap').style.display = 'none';
+  document.getElementById('repo-resultados-wrap').style.display = 'none';
+}
+
+function renderRepoList(query) {
+  const list = document.getElementById('repo-file-list');
+  let files = repoAllFiles;
+  if (query) {
+    const q = query.toLowerCase();
+    files = files.filter(f => f.name.toLowerCase().includes(q));
+  }
+  if (files.length === 0) {
+    list.innerHTML = '<div style="text-align:center;padding:24px;color:var(--text3);font-size:13px">Nenhum arquivo encontrado.</div>';
+    return;
+  }
+  list.innerHTML = files.map(f => `
+    <div class="file-item">
+      <span class="file-icon">📄</span>
+      <div class="file-info">
+        <div class="file-name">${f.name}</div>
+        <div class="file-meta">${(f.size/1024).toFixed(0)} KB · ${new Date(f.lastModified).toLocaleDateString('pt-BR')}</div>
+      </div>
+      <span class="file-status ${f.indexed ? 'status-ok' : 'status-proc'}">${f.indexed ? '✓ Na base' : 'Não indexado'}</span>
+    </div>
+  `).join('');
+}
+
+
+// ── BUSCA DE MINUTAS NO REPOSITÓRIO POR METADADOS ────────────────────────────
+// Abordagem A: filtra o índice gm_repo_known por fase, réu e palavras-chave
+// sem abrir nenhum PDF — zero tokens consumidos nesta etapa.
+
+/**
+ * Busca minutas indexadas no repositório que correspondam ao contexto do caso.
+ * @param {string}   fase       — fase processual detectada
+ * @param {string}   reu        — réu detectado
+ * @param {string[]} palavras   — palavras-chave das controvérsias detectadas
+ * @returns {Array}  array de { name, handle, meta, score } ordenado por relevância
+ */
+function repoBuscarMinutasPorMetadados(fase, reu, palavras) {
+  const known = JSON.parse(cfg('gm_repo_known', '{}'));
+  const norm = s => (s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+  const faseNorm = norm(fase);
+  const reuNorm  = norm(reu);
+  const pwNorms  = (palavras||[]).map(norm);
+
+  const resultados = [];
+
+  for (const [nome, meta] of Object.entries(known)) {
+    if (!meta.fase) continue; // não classificado ainda — ignorar
+
+    let score = 0;
+    const motivos = [];
+
+    // Fase: match exato = 3pts, match parcial = 1pt
+    const metaFase = norm(meta.fase);
+    if (metaFase === faseNorm) { score += 3; motivos.push('fase exata'); }
+    else if (metaFase.includes(faseNorm.split(' ')[0]) || faseNorm.includes(metaFase.split(' ')[0])) {
+      score += 1; motivos.push('fase parcial');
+    }
+
+    // Réu: match = 2pts
+    const metaReu = norm(meta.reu);
+    if (metaReu.includes(reuNorm) || reuNorm.includes(metaReu.split(' ')[0])) {
+      score += 2; motivos.push('réu');
+    }
+
+    // Palavras-chave / pontos: 1pt cada
+    const metaPontos = (meta.pontos||[]).map(norm).join(' ');
+    const metaContr  = (meta.controversias||[]).join(' ');
+    const textoMeta  = metaPontos + ' ' + metaContr + ' ' + norm(nome);
+    for (const pw of pwNorms) {
+      if (textoMeta.includes(pw)) { score += 1; motivos.push(pw); }
+    }
+
+    if (score > 0) {
+      // Recupera handle se repositório ainda estiver conectado
+      const fileEntry = repoAllFiles.find(f => f.name === nome);
+      resultados.push({
+        name: nome,
+        handle: fileEntry?.handle || null,
+        meta,
+        score,
+        motivos: [...new Set(motivos)]
+      });
+    }
+  }
+
+  resultados.sort((a, b) => b.score - a.score);
+  return resultados;
+}
+
+/**
+ * Lê o conteúdo de uma minuta do repositório como base64 (para envio à API).
+ * Só chamado quando o usuário solicita explicitamente — não automático.
+ */
+async function repoLerMinutaParaAPI(fileHandle) {
+  if (!fileHandle) return null;
+  try {
+    const file = await fileHandle.getFile();
+    return await readFileAsBase64(file);
+  } catch { return null; }
+}
+
+// ── Classificação IA em lote ──────────────────────────────────────────────────
+let batchCancelled = false;
+
+function abrirBatch() {
+  if (repoNovos.length === 0) return;
+  document.getElementById('repo-batch-wrap').style.display = '';
+  document.getElementById('repo-resultados-wrap').style.display = 'none';
+  batchCancelled = false;
+
+  // Monta a lista de status
+  document.getElementById('repo-batch-status').innerHTML = repoNovos.map((f, i) =>
+    `<div class="chunk-item" id="rbatch-${i}">
+      <span class="chunk-status" id="rcs-${i}"></span>
+      <span style="flex:1">${f.name}</span>
+      <span id="rbatch-res-${i}" style="font-size:11px;color:var(--text3)">aguardando</span>
+    </div>`
+  ).join('');
+}
+
+function cancelarBatch() {
+  batchCancelled = true;
+  document.getElementById('repo-batch-wrap').style.display = 'none';
+}
+
+async function classificarComIA() {
+  const apiKey = getProvider() === 'anthropic' ? getApiKey() : getOaiKey();
+  if (!apiKey) {
+    alert('Configure a chave de API em Configurações antes de classificar.');
+    return;
+  }
+
+  batchCancelled = false;
+  repoBatchResults = [];
+  document.getElementById('btn-classificar-ia').disabled = true;
+
+  // Aplicar filtro antes de classificar
+  const batchFiltro = aplicarFiltroEmLista(repoNovos, f => f.name);
+  const novosParaClassificar = batchFiltro.aprovados;
+  if (batchFiltro.filtroAtivo && batchFiltro.bloqueados.length > 0) {
+    const aviso = document.createElement('div');
+    aviso.className = 'alert alert-warn';
+    aviso.style.fontSize = '12px';
+    aviso.innerHTML = `⚠ Filtro ativo: ${batchFiltro.bloqueados.length} arquivo(s) ignorado(s) — ${batchFiltro.bloqueados.map(f=>f.name).join(', ')}`;
+    document.getElementById('repo-batch-status').prepend(aviso);
+  }
+  if (novosParaClassificar.length === 0) {
+    document.getElementById('btn-classificar-ia').disabled = false;
+    alert('Todos os arquivos novos foram bloqueados pelo filtro de nome. Ajuste o filtro em Configurações.');
+    return;
+  }
+
+  for (let i = 0; i < novosParaClassificar.length; i++) {
+    if (batchCancelled) break;
+    const f = novosParaClassificar[i];
+    document.getElementById('rcs-' + i).className = 'chunk-status active';
+    document.getElementById('rbatch-res-' + i).textContent = 'analisando...';
+
+    try {
+      const file = await f.handle.getFile();
+      const b64 = await readFileAsBase64(file);
+
+      let result = null;
+
+      if (getProvider() === 'anthropic') {
+        const resp = await fetch('https://api.anthropic.com/v1/messages', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': apiKey,
+            'anthropic-version': '2023-06-01',
+            'anthropic-dangerous-direct-browser-access': 'true'
+          },
+          body: JSON.stringify({
+            model: getModel(),
+            max_tokens: 300,
+            system: `Você analisa decisões judiciais de cumprimento de sentença contra a Fazenda Pública Federal. Responda APENAS com JSON no formato:
+{"tipo":"Despacho|Decisão interlocutória|Sentença","fase":"Apresentação de cálculos|Impugnação ao cumprimento|Homologação de cálculos|Expedição de Requisitório|Cumprimento efetivo","reu":"INSS|União Federal|FUNASA|UFMG|Outro ente federal","cs_tipo":"RPV — Pequeno valor|Precatório","pontos":["ponto1","ponto2"]}
+Pontos controvertidos: até 3 itens. Se não conseguir identificar, use o valor mais provável.`,
+            messages: [{
+              role: 'user',
+              content: [
+                { type: 'document', source: { type: 'base64', media_type: 'application/pdf', data: b64 } },
+                { type: 'text', text: 'Classifique este documento judicial.' }
+              ]
+            }]
+          })
+        });
+        const data = await resp.json();
+        if (data.error) throw new Error(data.error.message);
+        const raw = data.content?.map(b => b.text || '').join('') || '{}';
+        result = JSON.parse(raw.replace(/```json|```/g, '').trim());
+      } else {
+        // OpenAI — sem PDF nativo, usa só o nome do arquivo como heurística
+        const resp = await fetch('https://api.openai.com/v1/chat/completions', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
+          body: JSON.stringify({
+            model: getModel(),
+            max_tokens: 300,
+            messages: [
+              { role: 'system', content: 'Você classifica documentos judiciais pelo nome do arquivo. Responda APENAS com JSON: {"tipo":"Despacho|Decisão interlocutória|Sentença","fase":"Apresentação de cálculos|Impugnação ao cumprimento|Homologação de cálculos|Expedição de Requisitório|Cumprimento efetivo","reu":"INSS|União Federal|FUNASA|UFMG|Outro ente federal","cs_tipo":"RPV — Pequeno valor|Precatório","pontos":["ponto1"]}' },
+              { role: 'user', content: `Nome do arquivo: ${f.name}` }
+            ]
+          })
+        });
+        const data = await resp.json();
+        if (data.error) throw new Error(data.error.message);
+        const raw = data.choices?.[0]?.message?.content || '{}';
+        result = JSON.parse(raw.replace(/```json|```/g, '').trim());
+      }
+
+      result.name = f.name;
+      result.handle = f.handle;
+      result.size = f.size;
+      repoBatchResults.push(result);
+      document.getElementById('rcs-' + i).className = 'chunk-status done';
+      document.getElementById('rbatch-res-' + i).textContent = `${result.tipo} · ${result.reu}`;
+
+    } catch (e) {
+      document.getElementById('rcs-' + i).style.background = 'var(--danger)';
+      document.getElementById('rbatch-res-' + i).textContent = 'erro: ' + e.message.substring(0, 40);
+      repoBatchResults.push({ name: f.name, handle: f.handle, size: f.size, erro: true });
+    }
+  }
+
+  document.getElementById('btn-classificar-ia').disabled = false;
+  if (!batchCancelled && repoBatchResults.length > 0) renderBatchResultados();
+}
+
+function renderBatchResultados() {
+  document.getElementById('repo-batch-wrap').style.display = 'none';
+  document.getElementById('repo-resultados-wrap').style.display = '';
+
+  document.getElementById('repo-resultados-list').innerHTML = repoBatchResults.map((r, i) => {
+    if (r.erro) return `<div class="file-item"><span class="file-icon">⚠️</span><div class="file-info"><div class="file-name">${r.name}</div><div class="file-meta" style="color:var(--danger)">Falha na classificação — será ignorado</div></div></div>`;
+    return `
+    <div class="card" style="margin-bottom:10px;padding:12px">
+      <div style="font-size:12px;font-weight:600;margin-bottom:8px;display:flex;align-items:center;gap:8px">
+        📄 ${r.name}
+        <span class="tag tag-ok" style="margin:0">Classificado pela IA</span>
+      </div>
+      <div class="form-row" style="margin-bottom:8px">
+        <div class="form-group">
+          <label class="form-label">Tipo</label>
+          <select id="rr-tipo-${i}">
+            <option ${r.tipo==='Despacho'?'selected':''}>Despacho</option>
+            <option ${r.tipo==='Decisão interlocutória'?'selected':''}>Decisão interlocutória</option>
+            <option ${r.tipo==='Sentença'?'selected':''}>Sentença</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Fase</label>
+          <select id="rr-fase-${i}">
+            <option ${r.fase==='Apresentação de cálculos'?'selected':''}>Apresentação de cálculos</option>
+            <option ${r.fase==='Impugnação ao cumprimento'?'selected':''}>Impugnação ao cumprimento</option>
+            <option ${r.fase==='Manifestação sobre impugnação'?'selected':''}>Manifestação sobre impugnação</option>
+            <option ${r.fase==='Homologação de cálculos'?'selected':''}>Homologação de cálculos</option>
+            <option ${r.fase==='Remeter à contadoria'?'selected':''}>Remeter à contadoria</option>
+            <option ${r.fase==='Expedição de Requisitório'?'selected':''}>Expedição de Requisitório</option>
+            <option ${r.fase==='Converter em cumprimento de sentença'?'selected':''}>Converter em cumprimento de sentença</option>
+            <option ${r.fase==='Decisão — Medidas restritivas'?'selected':''}>Decisão — Medidas restritivas</option>
+            <option ${r.fase==='Sentença de extinção pelo pagamento'?'selected':''}>Sentença de extinção pelo pagamento</option>
+            <option ${r.fase==='Cumprimento efetivo'?'selected':''}>Cumprimento efetivo</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row" style="margin-bottom:8px">
+        <div class="form-group">
+          <label class="form-label">Réu</label>
+          <select id="rr-reu-${i}">
+            <option ${r.reu==='INSS'?'selected':''}>INSS</option>
+            <option ${r.reu==='União Federal'?'selected':''}>União Federal</option>
+            <option ${r.reu==='FUNASA'?'selected':''}>FUNASA</option>
+            <option ${r.reu==='UFMG'?'selected':''}>UFMG</option>
+            <option ${r.reu==='Outro ente federal'?'selected':''}>Outro ente federal</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Modalidade</label>
+          <select id="rr-cs-${i}">
+            <option ${r.cs_tipo==='RPV — Pequeno valor'?'selected':''}>RPV — Pequeno valor</option>
+            <option ${r.cs_tipo==='Precatório'?'selected':''}>Precatório</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Pontos controvertidos</label>
+        <input type="text" id="rr-pontos-${i}" value="${(r.pontos||[]).join(', ')}">
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function confirmarTodos() {
+  const models = getModels();
+  let adicionados = 0;
+  repoBatchResults.forEach((r, i) => {
+    if (r.erro) return;
+    const tipo = document.getElementById(`rr-tipo-${i}`)?.value || r.tipo;
+    const fase = document.getElementById(`rr-fase-${i}`)?.value || r.fase;
+    const reu = document.getElementById(`rr-reu-${i}`)?.value || r.reu;
+    const cs_tipo = document.getElementById(`rr-cs-${i}`)?.value || r.cs_tipo;
+    const pontosRaw = document.getElementById(`rr-pontos-${i}`)?.value || '';
+    const pontos = pontosRaw.split(',').map(p => p.trim()).filter(Boolean);
+    const newId = Math.max(...models.map(m => m.id), 0) + 1;
+    models.push({
+      id: newId, tipo, fase, reu, cs_tipo,
+      titulo: `${tipo} — ${reu} — ${fase}`,
+      pontos,
+      text: `[PDF: ${r.name}]\n\nTipo: ${tipo}\nFase: ${fase}\nRéu: ${reu}\nModalidade: ${cs_tipo}\nPontos: ${pontos.join(', ')}\n\n[Conteúdo extraído automaticamente do repositório PDF]`
+    });
+    // Marca como conhecido — salva metadados para busca da Curadoria
+    repoKnownFiles[r.name] = {
+      size: r.size, ts: Date.now(),
+      tipo, fase, reu, cs_tipo,
+      pontos,
+      controversias: pontos.map(p => p.toLowerCase())
+    };
+    adicionados++;
+    // Marca como indexado na lista local
+    const fi = repoAllFiles.find(f => f.name === r.name);
+    if (fi) fi.indexed = true;
+  });
+
+  saveModels(models);
+  cfgSet('gm_repo_known', JSON.stringify(repoKnownFiles));
+  loadStats();
+
+  document.getElementById('repo-resultados-wrap').style.display = 'none';
+  document.getElementById('repo-novos-wrap').style.display = 'none';
+  document.getElementById('badge-repo').style.display = 'none';
+  repoNovos = [];
+  repoBatchResults = [];
+  renderRepoList(document.getElementById('repo-search')?.value || '');
+  alert(`✓ ${adicionados} modelo(s) adicionado(s) à base com sucesso.`);
+}
+
+// Init — tudo dentro de DOMContentLoaded para garantir que o DOM existe
+// e que erros de inicialização não bloqueiam o botão de login
+document.addEventListener('DOMContentLoaded', () => {
+  try {
+    document.addEventListener('change', e => {
+      if (e.target.name === 'ia-fase') atualizarFaseResumo();
+    });
+    document.getElementById('login-pass').addEventListener('keydown', e => {
+      if (e.key === 'Enter') doLogin();
+    });
+  } catch(e) {
+    console.error('Init error:', e);
+  }
+});
+</script>
+
+
+</body></html>
